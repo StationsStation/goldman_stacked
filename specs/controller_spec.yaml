@@ -1,0 +1,201 @@
+openapi: 3.0.3
+info:
+  title: DAO Defense Collective API
+  version: 1.0.0
+
+paths:
+  /agents:
+    get:
+      summary: List all agents
+      responses:
+        '200':
+          description: A list of agents
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Agent'
+    post:
+      summary: Register a new agent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Agent'
+      responses:
+        '201':
+          description: Agent created
+
+  /agents/{id}:
+    get:
+      summary: Get an agent by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Agent found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Agent'
+        '404':
+          description: Agent not found
+
+  /proposals:
+    get:
+      summary: List all proposals
+      responses:
+        '200':
+          description: A list of proposals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Proposal'
+    post:
+      summary: Create a new proposal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Proposal'
+      responses:
+        '201':
+          description: Proposal created
+
+  /proposals/{id}:
+    get:
+      summary: Get a proposal by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Proposal found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Proposal'
+        '404':
+          description: Proposal not found
+
+  /proposals/{id}/vote:
+    post:
+      summary: Submit a vote on a proposal
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - voterId
+                - vote
+              properties:
+                voterId:
+                  type: string
+                vote:
+                  type: string
+                  enum: [yes, no, abstain]
+                reason:
+                  type: string
+      responses:
+        '200':
+          description: Vote submitted
+
+components:
+  schemas:
+    Agent:
+      type: object
+      required:
+        - id
+        - name
+        - address
+        - role
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        address:
+          type: string
+          description: Ethereum or Web3 address
+        profile:
+          type: string
+          description: Optional biography or metadata URI
+        profilePicture:
+          type: string
+          format: uri
+          description: URL or IPFS link to the agent's profile image
+        role:
+          type: string
+          enum: [council, voter]
+          description: Role of agent in the collective
+
+    Proposal:
+      type: object
+      required:
+        - id
+        - title
+        - status
+        - createdBy
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum:
+            - Pending
+            - Active
+            - Canceled
+            - Defeated
+            - Succeeded
+            - Queued
+            - Expired
+            - Executed
+          description: Current state of the proposal in its lifecycle
+        createdBy:
+          $ref: '#/components/schemas/Agent'
+        createdAt:
+          type: string
+          format: date-time
+        votes:
+          type: array
+          items:
+            type: object
+            required:
+              - voter
+              - vote
+            properties:
+              voter:
+                $ref: '#/components/schemas/Agent'
+              vote:
+                type: string
+                enum: [yes, no, abstain]
+              reason:
+                type: string
+
