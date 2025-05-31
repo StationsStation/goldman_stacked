@@ -15,6 +15,46 @@ keys.json
 agent/
 service/
 
+# From Ponder
+# Dependencies
+ponder/node_modules
+
+# Debug
+ponder/npm-debug.log*
+ponder/yarn-debug.log*
+ponder/yarn-error.log*
+ponder/.pnpm-debug.log*
+
+# Misc
+ponder/.DS_Store
+
+# Env files
+ponder/.env*.local
+
+# Ponder
+ponder/generated/
+ponder/.ponder/
+
+# From Ponder
+# Dependencies
+ponder/node_modules
+
+# Debug
+ponder/npm-debug.log*
+ponder/yarn-debug.log*
+ponder/yarn-error.log*
+ponder/.pnpm-debug.log*
+
+# Misc
+ponder/.DS_Store
+
+# Env files
+ponder/.env*.local
+
+# Ponder
+ponder/generated/
+ponder/.ponder/
+
 # frontend
 frontend/.DS_Store
 frontend/node_modules
@@ -26,6 +66,7 @@ frontend/.env.*
 frontend/!.env.example
 frontend/vite.config.js.timestamp-*
 frontend/vite.config.ts.timestamp-*
+
 
 packages/open_aea/
 packages/eightballer/
