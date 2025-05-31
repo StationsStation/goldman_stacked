@@ -19,13 +19,11 @@ contract GovernanceExecutor {
 
     uint256 public nonce;
     address public immutable timelock;
-    address public limitOrderProtocol;
 
     mapping(bytes32 => bool) public approvedHashes;
 
-    constructor(address _timelock, address _limitOrderProtocol) {
+    constructor(address _timelock) {
         timelock = _timelock;
-        limitOrderProtocol = _limitOrderProtocol;
     }
 
     /// @notice Approves DAO limit order proposal for execution.

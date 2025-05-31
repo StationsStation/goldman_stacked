@@ -1,0 +1,11 @@
+{
+  "providerName": "arbitrumOne",
+  "chainId": "42161",
+  "networkURL": "https://arb1.arbitrum.io/rpc",
+  "gasPriceInGwei": "0.003",
+  "endpointV2Address": "0x1a44076050125825900e736c501f859c50fE728c",
+  "governorChainId": "30184",
+  "votingTokenAddress": "0x12a3A4A4b19B8Ba99ad11f5b36ED58E010A4a19E",
+  "votingMachineLzReadAddress": "0x31D3202d8744B16A120117A053459DDFAE93c855",
+  "governorRelayLZAddress": "0x0000000000000000000000007E335396a9804097Fd7c04F8b3adc314Ca9398A0"
+}
