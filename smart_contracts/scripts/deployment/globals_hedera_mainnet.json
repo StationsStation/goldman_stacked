@@ -7,5 +7,6 @@
   "governorChainId": "30184",
   "votingTokenAddress": "0x12a3A4A4b19B8Ba99ad11f5b36ED58E010A4a19E",
   "votingMachineLzReadHederaAddress": "0x10100e74b7f706222f8a7c0be9fc7ae1717ad8b2",
-  "votingMachineLzReadAddress": "0x7bedCA17D29e53C8062d10902a6219F8d1E3B9B5"
+  "votingMachineLzReadAddress": "0x7bedCA17D29e53C8062d10902a6219F8d1E3B9B5",
+  "governorRelayLZAddress": "0x0000000000000000000000006D69adC0EB872c962AcA1224AC40B58Bc03f97D5"
 }
