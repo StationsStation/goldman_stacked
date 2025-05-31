@@ -13,6 +13,10 @@ classifiers = [
 ]
 package-mode = false
 
+[project]
+name = "goldman_stacked"
+version = "0.1.0"
+
 [tool.poetry.dependencies]
 python = ">=3.10,<3.14"
 open-aea-ledger-solana = "==1.65.0"
