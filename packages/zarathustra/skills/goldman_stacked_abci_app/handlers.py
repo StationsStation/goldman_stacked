@@ -92,7 +92,7 @@ class TelegramHandler(Handler):
     @property
     def strategy(self) -> GoldmanStackedStrategy:
         """Get the strategy."""
-        return cast(GoldmanStackedStrategy, self.context.asylum_strategy)
+        return cast(GoldmanStackedStrategy, self.context.goldman_stacked_strategy)
 
     def setup(self):
         """Implement the setup."""
@@ -141,16 +141,16 @@ class LlmChatCompletionHandler(Handler):
         llm_chat_completion = reconstitute(message)
         self.context.logger.debug(f"Reconstituted: {llm_chat_completion}")
         text = llm_chat_completion.choices[0].message.content
-        if not self.context.asylum_strategy.user_persona:
-            self.context.asylum_strategy.user_persona = text
+        if not self.strategy.user_persona:
+            self.strategy.user_persona = text
 
-        self.context.asylum_strategy.chat_history.append(text)
+        self.context.goldman_stacked_strategy.chat_history.append(text)
         self.strategy.llm_responses.append((LLMActions.REPLY, text))
 
     @property
     def strategy(self):
         """Get the strategy."""
-        return cast(GoldmanStackedStrategy, self.context.asylum_strategy)
+        return cast(GoldmanStackedStrategy, self.context.goldman_stacked_strategy)
 
     def setup(self):
         """Implement the setup."""

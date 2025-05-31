@@ -49,11 +49,13 @@ class GoldmanStackedStrategy(Model):
 class AgentPersona(Model):
     """AgentPersona."""
 
+    persona_name: str
+
     def __init__(self, **kwargs: Any) -> None:
         """Initialize agent persona."""
-        # for key, anno in self.__annotations__.items():
-        #     if (value := kwargs.get(key)) is None:
-        #         msg = f"Missing required parameter: {key} of type {anno}"
-        #         raise ValueError(msg)
-        #     setattr(self, key, value)
+        for key, anno in self.__annotations__.items():
+            if (value := kwargs.get(key)) is None:
+                msg = f"Missing required parameter: {key} of type {anno}"
+                raise ValueError(msg)
+            setattr(self, key, value)
         Model.__init__(self, **kwargs)

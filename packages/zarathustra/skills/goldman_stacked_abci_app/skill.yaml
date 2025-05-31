@@ -9,10 +9,10 @@ aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
   README.md: bafybeie7knzgwomn2c5gophogokjd27c2kmoq6ys2srbfaztgbkhhi7kfe
   __init__.py: bafybeihcji4rf2yza4lfwpp4ta7tds24gjotbfpgfph3fa6qw6u5zy4cte
-  behaviours.py: bafybeifnrppcjw5ytofoj3dch66pz6eeq6vdtxq5cjvzcvjpziaag4rvi4
+  behaviours.py: bafybeigx2elpeeb3sbmvl2wzqawsjemt4jttsm7ym2mseljkovdgt5pidq
   dialogues.py: bafybeigqjqzahwrwu3o4c5cd7lmylx7epdrkux34uvwvuimukk6y6rn2tu
-  handlers.py: bafybeigh3ipjs6yflvifa2q2gmbn7rqfqy64smwxzl2sinb4fqihmrr7vq
-  strategy.py: bafybeifwy6ijuje5yumdyplw7hdr6bkwuay4bg2wgu6v6nzj6yqisjjaz4
+  handlers.py: bafybeidmefksp7itvpms3yfzpd2f3uoku272ntrqtvvfmrsqzw3xmfarqa
+  strategy.py: bafybeicpqulfj7mukhmgjhv5counon35fcvelflsdt4kmuyphwio3jiqfm
   tests/__init__.py: bafybeigb2ji4vkcap3hokcedggjwsrah7te2nxjhkorwf3ibwgyaa2glma
 fingerprint_ignore_patterns: []
 connections:
@@ -48,7 +48,8 @@ models:
     args: {}
     class_name: LlmChatCompletionDialogues
   agent_persona:
-    args: {}
+    args:
+      persona_name: scam bankman fraud
     class_name: AgentPersona
   goldman_stacked_strategy:
     args:
