@@ -23,6 +23,7 @@ ponder.on("MyGovernor:VoteCast", async ({ event, context }) => {
         .insert(vote)
         .values({
             voter: event.args.voter,
-            proposalId: String(event.args.proposalId)
+            proposalId: String(event.args.proposalId),
+            weight: event.args.weight
         })
 })
