@@ -6,6 +6,8 @@ import yaml
 import connexion
 from flask_cors import CORS
 
+import govHelper
+
 
 log = logging.getLogger(__name__)
 
@@ -33,8 +35,7 @@ def post_agents(agent: dict) -> dict:
 
 def get_proposals() -> list[dict]:
     """Get all proposals."""
-    with open("proposals.yaml", encoding="utf-8") as yaml_file:
-        return yaml.safe_load(yaml_file)["proposals"]
+    return govHelper.get_proposals()
 
     # To change output to json string, use json.dumps(data)
 
@@ -49,7 +50,7 @@ def get_proposal(id: str) -> dict:
     with open("proposals.yaml", encoding="utf-8") as yaml_file:
         data = yaml.safe_load(yaml_file)
 
-    filtered_proposal = [proposal for proposal in data["proposals"] if proposal["id"] == id]
+    filtered_proposal = [proposal for proposal in data["proposals"] if proposal["proposalId"] == id]
     return filtered_proposal[0]
 
 

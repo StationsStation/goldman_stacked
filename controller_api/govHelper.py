@@ -55,13 +55,11 @@ def get_votes(proposal_id: str) -> list[dict]:
         votes(where:{{proposalId: {proposal_id}}}, orderBy:"voter", orderDirection: "desc") {{
             items {{
                 voter
-                proposalId
+                weight
             }}
         }}
     }}
     """
 
     response = requests.post(PONDER_URL, json={"query": query}, headers=HEADERS, timeout=60)
-    return response.json()["data"]
-
-get_proposals()
+    return response.json()["data"]["votes"]["items"]

@@ -160,16 +160,11 @@ components:
     Proposal:
       type: object
       required:
-        - id
-        - title
+        - proposalId
         - status
         - createdBy
-        - createdAt
       properties:
-        id:
-          type: string
-          format: uuid
-        title:
+        proposalId:
           type: string
         description:
           type: string
@@ -186,23 +181,14 @@ components:
             - Executed
           description: Current state of the proposal in its lifecycle
         createdBy:
-          $ref: '#/components/schemas/Agent'
-        createdAt:
           type: string
-          format: date-time
         votes:
           type: array
           items:
             type: object
-            required:
-              - voter
-              - vote
             properties:
-              voter:
-                $ref: '#/components/schemas/Agent'
-              vote:
+              voterAddress:
                 type: string
-                enum: [yes, no, abstain]
-              reason:
+              weight:
                 type: string
 
