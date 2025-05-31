@@ -7,7 +7,7 @@ export default createConfig({
   contracts: {
     MyGovernor: {
       abi: MyGovernor,
-      address: "0xb1ae1ab21f872bcd17f706ee73327fb58e9a0da6",
+      address: "0xE5Da5F4d8644A271226161a859c1177C5214c54e",
       chain: "base",
       startBlock: 30956292,
     },

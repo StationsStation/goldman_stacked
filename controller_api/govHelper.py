@@ -11,7 +11,7 @@ RPC = "https://base.drpc.org"
 with open("abi.json", encoding="utf-8") as file:
     ABI = file.read()
 
-ADDRESS = "0xb1ae1Ab21f872bCD17f706Ee73327fB58e9A0Da6"
+ADDRESS = "0xE5Da5F4d8644A271226161a859c1177C5214c54e"
 
 PONDER_URL = "http://localhost:42069/graphql"
 HEADERS = {"Content-Type": "application/json"}
@@ -40,7 +40,7 @@ def get_proposals() -> list[dict]:
 
     proposals = response.json()["data"]["proposals"]["items"]
     for proposal in proposals:
-        status = governor_contract.functions.state(proposal["proposalId"]).call()
+        status = governor_contract.functions.state(int(proposal["proposalId"])).call()
         proposal["status"] = status
         votes = get_votes(proposal["proposalId"])
         proposal["votes"] = votes
@@ -52,7 +52,7 @@ def get_votes(proposal_id: str) -> list[dict]:
     """Get votes for proposal_id."""
     query = f"""
     {{
-        votes(where:{{proposalId: {proposal_id}}}, orderBy:"voter", orderDirection: "desc") {{
+        votes(where:{{proposalId: "{proposal_id}"}}, orderBy:"voter", orderDirection: "desc") {{
             items {{
                 voter
                 weight
