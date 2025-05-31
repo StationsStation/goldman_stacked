@@ -20,7 +20,7 @@ protocols:
 - open_aea/signing:1.0.0:bafybeig2d36zxy65vd7fwhs7scotuktydcarm74aprmrb5nioiymr3yixm
 - eightballer/chatroom:0.1.0:bafybeib36ua2o3lea5vkp6erhf23wb4egm6us5xj2z2xd7sq2tjarlzt4i
 skills:
-- zarathustra/goldman_stacked_abci_app:0.1.0:bafybeidqxuewpvpr2jhhyvtkmnklecocep3nw6sbxdg5sjm7cdylewjtfe
+- zarathustra/goldman_stacked_abci_app:0.1.0:bafybeiecvnkbafphrznvkofhrr57ibwxhooax6iieaafuougzjz5t4llj4
 customs: []
 default_ledger: ethereum
 required_ledgers:

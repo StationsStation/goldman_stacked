@@ -122,9 +122,15 @@ class InitialState(BaseState):
 
     def act(self) -> None:
         """Perfom the act."""
-        self._event = GoldmanStackedABCIAppEvents.PERSONA_MISSING
-        self._event = GoldmanStackedABCIAppEvents.PERSONA_EXISTS
-        # self._event = GoldmanStackedABCIAppEvents.ERROR
+
+        try:
+            if self.strategy.new_users:
+                self._event = GoldmanStackedABCIAppEvents.PERSONA_MISSING
+            else:
+                self._event = GoldmanStackedABCIAppEvents.PERSONA_EXISTS
+        except Exception as e:
+            self.context.logger.info(f"Exception in {self.name}: {e}")
+            self._event = GoldmanStackedABCIAppEvents.ERROR
 
         self._is_done = True
 
@@ -138,6 +144,7 @@ class ConstructPersonaRound(BaseState):
 
     def act(self) -> None:
         """Perfom the act."""
+
         self._event = GoldmanStackedABCIAppEvents.DONE
         # self._event = GoldmanStackedABCIAppEvents.ERROR
 
