@@ -63,7 +63,7 @@ contract CallProposeBase is Script {
         //MessagingFee memory fee = _quote(31084, cmd, options, false);
 
         vm.startBroadcast(signer);
-        IGovernor(governor).propose{value: 1000000000000000}(targets, values, calldatas, description, options);
+        IGovernor(governor).propose{value: 2500000000000000}(targets, values, calldatas, description, options);
         vm.stopBroadcast();
     }
 }
