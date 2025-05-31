@@ -1,10 +1,11 @@
 {
     "dev": {
-        "skill/zarathustra/goldman_stacked_abci_app/0.1.0": "bafybeidfeyhnxkjpmppp4ala4ljaeoi2m7axrmgysbhzbgnidaoy6bfn7m",
-        "agent/zarathustra/goldman_stacked/0.1.0": "bafybeihfqbnd33wz3nxutkg4u5vnda2nrr4qwmvxlfq4e3ka5bg2tw5edy",
-        "service/zarathustra/goldman_stacked/0.1.0": "bafybeieyu2tpi6mlml2iqr2uagbqmrucrmlobsvz7jhj4ld7hrawf5y5hi"
+        "skill/zarathustra/goldman_stacked_abci_app/0.1.0": "bafybeibn2wei7skhwhlnskwfyehrrdm2jm7rg2d5vfhed3xveyqpozmiqi",
+        "agent/zarathustra/goldman_stacked/0.1.0": "bafybeih2wwrocoumqw33t7obckcewe3d33w5zr5wbxhznmxb4b3idfsgty",
+        "service/zarathustra/goldman_stacked/0.1.0": "bafybeigwepccroip6inoifuwkmbysxreuvjk6qiif4cr6avkxjntkroev4"
     },
     "third_party": {
+        "protocol/eightballer/chatroom/0.1.0": "bafybeib36ua2o3lea5vkp6erhf23wb4egm6us5xj2z2xd7sq2tjarlzt4i",
         "protocol/eightballer/default/0.1.0": "bafybeicsdb3bue2xoopc6lue7njtyt22nehrnkevmkuk2i6ac65w722vwy",
         "protocol/eightballer/http/0.1.0": "bafybeid75xhq7hfdt7sgj7yrn44yj57xrgxscaw34ir46tndfzvodioxme",
         "protocol/eightballer/prometheus/1.0.0": "bafybeidxo32tu43ru3xlk3kd5b6xlwf6vaytxvvhtjbh7ag52kexos4ke4",
@@ -12,6 +13,7 @@
         "connection/eightballer/http_client/0.1.0": "bafybeiaz5auftwxpt4czrmeeesggqlkc2kosmetq6adrebeu6g7bkhqc2u",
         "connection/eightballer/http_server/0.1.0": "bafybeidrvllrr23mc6bvjxn6v3hny6oiwhfgi72n2b7w6ck5luousjfbbq",
         "connection/eightballer/prometheus/0.1.1": "bafybeicy4ck2wvauo2vh6ji64xrzlgezh27powi6ztokr4yujtf3cft6wi",
+        "connection/eightballer/telegram_wrapper/0.1.0": "bafybeicnzu2fsjejj4loqcc2bbixgovrbdxpt3qnad6kjrptu7rghgh74e",
         "skill/eightballer/prometheus/0.1.0": "bafybeicl5i7e467aowfarke4bbyixo2dggar276njmvyuwbsby5pxshhtu"
     }
 }

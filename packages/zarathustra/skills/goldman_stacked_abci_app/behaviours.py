@@ -21,9 +21,21 @@
 
 import os
 from abc import ABC, abstractmethod
-from typing import Optional, Any
+from typing import Optional, Any, cast
 from aea.skills.behaviours import FSMBehaviour, State
 from enum import Enum
+
+from packages.eightballer.protocols.chatroom.message import (
+    ChatroomMessage as TelegramMessage,
+)
+from packages.zarathustra.skills.goldman_stacked_abci_app.strategy import (
+    LLMActions,
+    AgentPersona,
+    GoldmanStackedStrategy,
+)
+from packages.eightballer.connections.telegram_wrapper.connection import (
+    CONNECTION_ID as TELEGRAM_CONNECTION_ID,
+)
 
 
 class GoldmanStackedABCIAppEvents(Enum):
@@ -77,6 +89,16 @@ class BaseState(State, ABC):
         """Current event"""
         return self._event
 
+    @property
+    def strategy(self) -> GoldmanStackedStrategy:
+        """Get the strategy."""
+        return cast(GoldmanStackedStrategy, self.context.goldman_stacked_strategy)
+
+    @property
+    def agent_persona(self) -> AgentPersona:
+        """Get the agent persona."""
+        return cast(AgentPersona, self.context.agent_persona)
+
 
 class InitialState(BaseState):
     """This class implements the behaviour of the state InitialState."""
@@ -91,6 +113,8 @@ class InitialState(BaseState):
         self._event = GoldmanStackedABCIAppEvents.PERSONA_EXISTS
         # self._event = GoldmanStackedABCIAppEvents.ERROR
 
+        self._is_done = True
+
 
 class ConstructPersonaRound(BaseState):
     """This class implements the behaviour of the state ConstructPersonaRound."""
@@ -103,6 +127,8 @@ class ConstructPersonaRound(BaseState):
         """Perfom the act."""
         self._event = GoldmanStackedABCIAppEvents.DONE
         # self._event = GoldmanStackedABCIAppEvents.ERROR
+
+        self._is_done = True
 
 
 class CheckProposalsRound(BaseState):
@@ -119,9 +145,14 @@ class CheckProposalsRound(BaseState):
         self._event = GoldmanStackedABCIAppEvents.APPROVED_BY_DAO
         # self._event = GoldmanStackedABCIAppEvents.ERROR
 
+        self._is_done = True
+
 
 class AICouncilNegotiationRound(BaseState):
     """This class implements the behaviour of the state AICouncilNegotiationRound."""
+
+    counterparty = str(TELEGRAM_CONNECTION_ID)
+    LLMActions = LLMActions
 
     def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
@@ -132,6 +163,23 @@ class AICouncilNegotiationRound(BaseState):
         self._event = GoldmanStackedABCIAppEvents.COUNCIL_APPROVED
         self._event = GoldmanStackedABCIAppEvents.REJECTED_BY_DAO
         # self._event = GoldmanStackedABCIAppEvents.ERROR
+        for peer in ["-1002323154632"]:
+            msg = "Blabla"
+            self.create_and_send(
+                chat_id=peer,
+                text=msg,
+            )
+        self._is_done = True
+
+    def create_and_send(self, send=True, **kwargs) -> None:
+        """Create and send a message."""
+        message, _dialogue = self.context.telegram_dialogues.create(
+            counterparty=self.counterparty,
+            performative=TelegramMessage.Performative.MESSAGE,
+            **kwargs,
+        )
+        if send:
+            self.context.outbox.put_message(message)
 
 
 class ExecuteWorkflowRound(BaseState):
@@ -146,6 +194,8 @@ class ExecuteWorkflowRound(BaseState):
         self._event = GoldmanStackedABCIAppEvents.DONE
         # self._event = GoldmanStackedABCIAppEvents.ERROR
 
+        self._is_done = True
+
 
 class NotifyUsersRound(BaseState):
     """This class implements the behaviour of the state NotifyUsersRound."""
@@ -159,6 +209,8 @@ class NotifyUsersRound(BaseState):
         self._event = GoldmanStackedABCIAppEvents.DONE
         # self._event = GoldmanStackedABCIAppEvents.ERROR
 
+        self._is_done = True
+
 
 class WaitBeforeRetryRound(BaseState):
     """This class implements the behaviour of the state WaitBeforeRetryRound."""
@@ -171,6 +223,8 @@ class WaitBeforeRetryRound(BaseState):
         """Perfom the act."""
         self._event = GoldmanStackedABCIAppEvents.DONE
         # self._event = GoldmanStackedABCIAppEvents.ERROR
+
+        self._is_done = True
 
 
 class GoldmanStackedABCIAppFsmBehaviour(FSMBehaviour):

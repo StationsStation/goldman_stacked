@@ -26,11 +26,67 @@ from aea.protocols.base import Message
 
 from packages.eightballer.protocols.default import DefaultMessage
 from packages.eightballer.protocols.http.message import HttpMessage
+from packages.zarathustra.skills.goldman_stacked_abci_app.strategy import (
+    LLMActions,
+    GoldmanStackedStrategy,
+)
 from packages.zarathustra.skills.goldman_stacked_abci_app.dialogues import (
     HttpDialogue,
     HttpDialogues,
     DefaultDialogues,
 )
+from packages.eightballer.protocols.chatroom.message import (
+    ChatroomMessage as TelegramMessage,
+)
+from packages.eightballer.protocols.chatroom.dialogues import (
+    ChatroomDialogue as TelegramDialogue,
+    ChatroomDialogues as TelegramDialogues,
+)
+
+
+class TelegramHandler(Handler):
+    """This implements the Telegram handler."""
+
+    SUPPORTED_PROTOCOL = TelegramMessage.protocol_id
+
+    def handle(self, message: Message) -> None:
+        """Implement the reaction to an envelope."""
+
+        telegram_msg = cast(TelegramMessage, message)
+        if telegram_msg.performative == TelegramMessage.Performative.ERROR:
+            self.context.logger.error(f"Received error message={telegram_msg}")
+            return
+
+        if telegram_msg.performative == TelegramMessage.Performative.MESSAGE_SENT:
+            self.context.logger.debug(f"received telegram message={telegram_msg}")
+            return
+
+        telegram_dialogues = cast(TelegramDialogues, self.context.telegram_dialogues)
+        telegram_dialogue = cast(
+            TelegramDialogue, telegram_dialogues.update(telegram_msg)
+        )
+
+        if not telegram_dialogue:
+            self.context.logger.debug(
+                f"received invalid telegram message={telegram_msg}, unidentified dialogue."
+            )
+
+        self.context.logger.info(
+            f"received telegram message={telegram_msg.from_user}, content={telegram_msg.text}"
+        )
+        self.strategy.pending_telegram_messages.append(telegram_msg)
+        self.strategy.chat_history.append(telegram_msg.text)
+
+    @property
+    def strategy(self) -> GoldmanStackedStrategy:
+        """Get the strategy."""
+        return cast(GoldmanStackedStrategy, self.context.asylum_strategy)
+
+    def setup(self):
+        """Implement the setup."""
+
+    def teardown(self):
+        """Implement the handler teardown."""
 
 
 class HttpHandler(Handler):

@@ -9,16 +9,19 @@ aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
   README.md: bafybeie7knzgwomn2c5gophogokjd27c2kmoq6ys2srbfaztgbkhhi7kfe
   __init__.py: bafybeihcji4rf2yza4lfwpp4ta7tds24gjotbfpgfph3fa6qw6u5zy4cte
-  behaviours.py: bafybeieylcgv4lx4yts2alw44ouvwfeml2h326tbmduz4fo7gouelzvnqu
+  behaviours.py: bafybeidiglyusmubuyl7j23s5ntdagengmbgyp7zatkqpmgkayw6frxkou
   dialogues.py: bafybeigqjqzahwrwu3o4c5cd7lmylx7epdrkux34uvwvuimukk6y6rn2tu
-  handlers.py: bafybeihmqlbtcymtbrapxpfszkcbric6z42azcymavgqsajetekglf6xvm
+  handlers.py: bafybeiamgamah7i6vefz5lwvdyazotpgglfoidcelvyxm7i735laltz5m4
+  strategy.py: bafybeifwy6ijuje5yumdyplw7hdr6bkwuay4bg2wgu6v6nzj6yqisjjaz4
   tests/__init__.py: bafybeigb2ji4vkcap3hokcedggjwsrah7te2nxjhkorwf3ibwgyaa2glma
 fingerprint_ignore_patterns: []
-connections: []
+connections:
+- eightballer/telegram_wrapper:0.1.0:bafybeicnzu2fsjejj4loqcc2bbixgovrbdxpt3qnad6kjrptu7rghgh74e
 contracts: []
 protocols:
 - eightballer/default:0.1.0:bafybeicsdb3bue2xoopc6lue7njtyt22nehrnkevmkuk2i6ac65w722vwy
 - eightballer/http:0.1.0:bafybeid75xhq7hfdt7sgj7yrn44yj57xrgxscaw34ir46tndfzvodioxme
+- eightballer/chatroom:0.1.0:bafybeib36ua2o3lea5vkp6erhf23wb4egm6us5xj2z2xd7sq2tjarlzt4i
 skills: []
 behaviours:
   main:
@@ -36,6 +39,17 @@ models:
   http_dialogues:
     args: {}
     class_name: HttpDialogues
+  telegram_dialogues:
+    args: {}
+    class_name: TelegramDialogues
+  agent_persona:
+    args: {}
+    class_name: AgentPersona
+  goldman_stacked_strategy:
+    args:
+      data_dir: data
+      output_dir: ${str:../output}
+    class_name: GoldmanStackedStrategy
 dependencies: {}
 is_abstract: false
 customs: []
