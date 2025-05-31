@@ -1,6 +1,7 @@
 [profile.default]
 src = "smart_contracts/src"
 out = "smart_contracts/out"
+test = "smart_contracts/test"
 libs = ["lib"]
 solc_version = "0.8.30"
 optimizer = true

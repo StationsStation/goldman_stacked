@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.30;
 
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
 
-contract MyVotesToken is ERC20, ERC20Permit, ERC20Votes {
+contract VotingToken is ERC20, ERC20Permit, ERC20Votes {
     constructor()
         ERC20("VotesToken", "VTK")
         ERC20Permit("VotesToken")
@@ -17,6 +17,10 @@ contract MyVotesToken is ERC20, ERC20Permit, ERC20Votes {
         override(ERC20, ERC20Votes)
     {
         super._update(from, to, value);
+    }
+
+    function mint(address to, uint256 amount) external {
+        _mint(to, amount);
     }
 
     function nonces(address owner)
