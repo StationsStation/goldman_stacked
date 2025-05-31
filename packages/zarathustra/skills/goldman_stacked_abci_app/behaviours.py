@@ -21,6 +21,8 @@
 
 import os
 import time
+from enum import Enum
+from pydantic import BaseModel
 from abc import ABC, abstractmethod
 from typing import Optional, Any, cast
 from aea.skills.behaviours import FSMBehaviour, State
@@ -64,6 +66,30 @@ USER_PROMPT = (
 SLEEP = 3
 
 
+class ProposalState(Enum):
+    PENDING = "PENDING"
+    APPROVED = "APPROVED"
+    REJECTED = "REJECTED"
+
+
+class Proposal(BaseModel):
+    status: ProposalState = ProposalState.PENDING
+    description: str
+
+
+PROPOSALS = [
+    Proposal(
+        description="Proposal #41: Stake all DAO assets in a 15-year locked $HEX contract for “optimal APY compounding spiritual alignment.” Early unstakers will be publicly shamed on-chain."
+    ),
+    Proposal(
+        description="Proposal #42: Enable optional weekly summary reports in the DAO forum outlining passed, pending, and rejected proposals. No changes to voting mechanics or execution policies."
+    ),
+    Proposal(
+        description="Proposal #43: Set up a multisig safety mechanism requiring 2-of-3 council approvals before executing treasury withdrawals above 10% of total assets."
+    ),
+]
+
+
 class GoldmanStackedABCIAppEvents(Enum):
     """Events for the fsm."""
 
@@ -100,6 +126,7 @@ class BaseState(State, ABC):
         super().__init__(**kwargs)
         self._event = None
         self._is_done = False
+        self._current_proposal = None
 
     @abstractmethod
     def act(self) -> None:
@@ -129,6 +156,14 @@ class BaseState(State, ABC):
     def agent_persona(self) -> AgentPersona:
         """Get the agent persona."""
         return cast(AgentPersona, self.context.agent_persona)
+
+    @property
+    def proposals(self):
+        return PROPOSALS
+
+    @property
+    def current_proposal(self) -> Proposal | None:
+        return self._current_proposal
 
 
 class InitialStateRound(BaseState):
@@ -208,10 +243,23 @@ class CheckProposalsRound(BaseState):
 
     def act(self) -> None:
         """Perfom the act."""
-        self._event = GoldmanStackedABCIAppEvents.PENDING_PREAPPROVAL
-        self._event = GoldmanStackedABCIAppEvents.REJECTED_BY_DAO
-        self._event = GoldmanStackedABCIAppEvents.APPROVED_BY_DAO
-        # self._event = GoldmanStackedABCIAppEvents.ERROR
+
+        try:
+            if not self.proposals:
+                self._event = GoldmanStackedABCIAppEvents.NO_PROPOSALS
+            else:
+                self._current_proposal = self.proposals.pop()
+                self.context.logger.info(f"Proposal: {self.current_proposal}")
+                match self.current_proposal.status:
+                    case ProposalState.PENDING:
+                        self._event = GoldmanStackedABCIAppEvents.PENDING_PREAPPROVAL
+                    case ProposalState.REJECTED:
+                        self._event = GoldmanStackedABCIAppEvents.REJECTED_BY_DAO
+                    case ProposalState.APPROVED:
+                        self._event = GoldmanStackedABCIAppEvents.APPROVED_BY_DAO
+        except Exception as e:
+            self.context.logger.info(f"Exception in {self.name}: {e}")
+            self._event = GoldmanStackedABCIAppEvents.ERROR
 
         self._is_done = True
 
@@ -228,15 +276,20 @@ class AICouncilNegotiationRound(BaseState):
 
     def act(self) -> None:
         """Perfom the act."""
-        self._event = GoldmanStackedABCIAppEvents.COUNCIL_APPROVED
-        self._event = GoldmanStackedABCIAppEvents.REJECTED_BY_DAO
-        # self._event = GoldmanStackedABCIAppEvents.ERROR
-        for peer in ["-1002323154632"]:
-            msg = "Blabla"
-            self.create_and_send(
-                chat_id=peer,
-                text=msg,
-            )
+
+        try:
+            self._event = GoldmanStackedABCIAppEvents.COUNCIL_APPROVED
+            self._event = GoldmanStackedABCIAppEvents.COUNCIL_REJECTED
+            for peer in ["-1002323154632"]:
+                msg = self.current_proposal.description
+                self.create_and_send(
+                    chat_id=peer,
+                    text=msg,
+                )
+        except Exception as e:
+            self.context.logger.info(f"Exception in {self.name}: {e}")
+            self._event = GoldmanStackedABCIAppEvents.ERROR
+
         self._is_done = True
 
     def create_and_send(self, send=True, **kwargs) -> None:
@@ -259,8 +312,12 @@ class ExecuteWorkflowRound(BaseState):
 
     def act(self) -> None:
         """Perfom the act."""
-        self._event = GoldmanStackedABCIAppEvents.DONE
-        # self._event = GoldmanStackedABCIAppEvents.ERROR
+
+        try:
+            self._event = GoldmanStackedABCIAppEvents.DONE
+        except Exception as e:
+            self.context.logger.info(f"Exception in {self.name}: {e}")
+            self._event = GoldmanStackedABCIAppEvents.ERROR
 
         self._is_done = True
 
@@ -274,8 +331,12 @@ class NotifyUsersRound(BaseState):
 
     def act(self) -> None:
         """Perfom the act."""
-        self._event = GoldmanStackedABCIAppEvents.DONE
-        # self._event = GoldmanStackedABCIAppEvents.ERROR
+
+        try:
+            self._event = GoldmanStackedABCIAppEvents.DONE
+        except Exception as e:
+            self.context.logger.info(f"Exception in {self.name}: {e}")
+            self._event = GoldmanStackedABCIAppEvents.ERROR
 
         self._is_done = True
 
@@ -289,8 +350,12 @@ class WaitBeforeRetryRound(BaseState):
 
     def act(self) -> None:
         """Perfom the act."""
-        self._event = GoldmanStackedABCIAppEvents.DONE
-        # self._event = GoldmanStackedABCIAppEvents.ERROR
+
+        try:
+            self._event = GoldmanStackedABCIAppEvents.DONE
+        except Exception as e:
+            self.context.logger.info(f"Exception in {self.name}: {e}")
+            self._event = GoldmanStackedABCIAppEvents.ERROR
 
         self._is_done = True
 
