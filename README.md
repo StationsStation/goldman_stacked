@@ -21,7 +21,7 @@ Enter **Goldman Stacked**: an autonomous, AI-driven council that:
 
 
 ### **Agent Asylum**: A next-gen meta-programming tool
-In ETHDenver 2025, we built **Agent Asylum**, a proof‐of‐concept that uses coordinated swarms of AI agents to **ideate**, **scaffold**, and **bootstrap** new hackathon projects end to end. Agent Asylum **generates project templates**, **creates Git repos**, **writes boilerplate code**, and even **opens PRs** autonomously based on "digital doppelgänger" personas of real‐world developers. In this hackathon, we use this "meta-programming on steroids" tooling to **kickstart** our new project, leveraging its rapid generation capabilities to scaffold **Goldman Stacked**.
+In ETHDenver 2025, we built [**Agent Asylum**](https://github.com/StationsStation/EthDenver2025/), a proof-of-concept where AI agents **ideate**, **scaffold**, and **bootstrap** hackathon projects end-to-end. Agent Asylum generates templates, creates Git repos, writes boilerplate, and opens PRs based on “digital doppelgänger” personas. We’re using that same meta-programming engine in this hackathon to quickly scaffold **Goldman Stacked**, then focus on governance logic.
 
 
 ---
@@ -121,19 +121,15 @@ While cross‐chain liquidity boosts TVL (Total Value Locked) and yields, it **c
 
 **Goldman Stacked** automates cross‐chain vote aggregation and submission, reducing friction for smaller stakeholders and raising the bar for malicious actors.
 
-### [**Capture‐Resistant Governance & Anticapture**](https://knowledge.superbenefit.org/links/Anticapture/)
-The **Anticapture** framework, published less than two weeks ago, formalizes **capture-resistant governance** by:
-- Defining **"capture"** as when a coordinated few gain enough voting power to dictate outcomes.
-- Outlining a **taxonomy** of capture‐risk factors (e.g., token concentration, delegation patterns).
-- Providing **monitoring tools** and **dashboards** to assess capture exposure and propose mitigations.
+### **Capture-Resistant Governance**
+The [Anticapture](https://knowledge.superbenefit.org/links/Anticapture/) framework formalizes "capture-resistant governance" by:
+- Defining "capture" as when a coordinated few gain enough power to dominate outcomes.
+- Outlining capture-risk factors (token concentration, delegation patterns).
+- Providing metrics and dashboards to assess exposure.
 
-However, Anticapture remains an **analytical framework**: it offers metrics, risk‐assessment dashboards, and theoretical guidelines, **but does not implement an AI‐powered system to automatically veto or publish proposals**. That’s where **Goldman Stacked** differentiates itself by providing an **active, autonomous council** that:
-1. **Pre‐approves or blocks proposals** before they hit on‐chain governance modules.
-2. **Aggregates cross‐chain vote weights** via LayerZero and computes **quadratic voting power**.
-3. **Submits on‐chain transactions** across all target chains in parallel, thwarting single‐chain whales.
-4. **Broadcasts real‐time notifications** to human DAO members, reducing voter apathy by lowering friction.
+We appreciate the Anticapture authors for articulating this framework - Goldman Stacked builds on their foundation by adding an autonomous AI council to actively veto or publish proposals. Our synergy lies in taking Anticapture’s theory and implementing bot-driven, cross-chain execution in real time.
 
-### [**Derolas Case Study**](https://medium.com/@8ball030/mergers-and-acquisitions-m-as-in-the-wild-west-of-web3-e8d5f0d6d30b)
+### **Derolas Case Study**
 On April 3, 2025, a "hostile takeover" proposal appeared on Derive Exchange’s governance forum. Synthetix, an otherwise respected protocol, submitted a **malicious bid** to acquire Derive, without forewarning the community .
 - **Blindsided Community:** Derive’s founders were historically supportive but lacked current decision-making authority. Token holders scrambled to organize a defense, diverting resources for over a week.
 - **Human Rally:** Only **manual, on‐chain voting**, after frantic Discord calls and Telegram threads, ultimately prevailed, forcing Synthetix to withdraw its offer just before the deadline.
@@ -141,6 +137,8 @@ On April 3, 2025, a "hostile takeover" proposal appeared on Derive Exchange’s 
   1. **Vetted the takeover proposal** immediately upon submission.
   2. **Blocked it automatically** if it detected conflicting interests or insufficient community consensus.
   3. **Notified Derive token holders** in real time, preventing wasted human hours and market uncertainty.
+
+Learn more in the [Derolas article](https://medium.com/@8ball030/mergers-and-acquisitions-m-as-in-the-wild-west-of-web3-e8d5f0d6d30b).
 
 ### **Our Unique Selling Points**
 - **Meta‐Scaffolded by Agent Asylum:** We used **Agent Asylum** to rapidly generate the initial project template, saving weeks of boilerplate coding. But **we are not continuing Agent Asylum itself**; Goldman Stacked is its own, standalone application.
@@ -152,13 +150,13 @@ On April 3, 2025, a "hostile takeover" proposal appeared on Derive Exchange’s 
 
 ---
 
-## **The Future of AI‐Driven DAO Governance**
+## **The Future of AI-Driven DAO Governance**
 
-We began with **Agent Asylum**, a proof-of-concept demonstrating that swarms of AI agents can plan, discuss, vote, code, review, and ship entire projects autonomously. **Goldman Stacked** takes that paradigm and focuses it on **secure, cross-chain DAO governance**:
-- **Today**, it’s a Telegram-based AI council that pre-approves proposals, computes cross-chain voting weights, and posts on-chain transactions.
-- **Tomorrow**, it could become the **default governance layer** for multiple DAOs, autonomously vetting proposals across dozens of protocols, or even serve as a **meta-governance body** that ensures ecosystem-wide capture resistance.
+We began with Agent Asylum, proving that AI agent swarms can autonomously plan, discuss, vote, code, review, and ship projects. Goldman Stacked focuses that paradigm on secure, cross-chain DAO governance:
+- **Today**, it’s a Telegram-based AI council that pre-approves proposals, computes cross-chain voting weights, and publishes on-chain transactions.
+- **Tomorrow**, informed by the [Anticapture](https://knowledge.superbenefit.org/links/Anticapture/) framework’s call for capture resistance, Goldman Stacked could become the default governance layer for multiple DAOs - automatically monitoring capture metrics, vetoing high-risk proposals, and coordinating meta-governance bodies across protocols.
 
-As decentralized protocols proliferate across chains, the **complexity** and **attack surface** grow exponentially. By embedding an **autonomous AI council** that can preemptively block malicious schemes and aggregate “small” votes into a unified cross-chain voice, **Goldman Stacked** reduces governance risk, slashes voter apathy, and empowers DAOs to govern with confidence. Human autonomy is not replaced; it’s **amplified**.
+As DAOs proliferate across chains, complexity and attack surface grow exponentially. An autonomous AI council that preemptively blocks malicious schemes and unifies “small” votes into a cross-chain voice reduces governance risk, slashes voter apathy, and empowers DAOs to govern with confidence. Human autonomy isn’t replaced; it’s amplified.
 
 ---
 
