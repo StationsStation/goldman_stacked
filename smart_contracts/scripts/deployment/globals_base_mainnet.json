@@ -4,8 +4,8 @@
   "networkURL": "https://mainnet.base.org",
   "gasPriceInGwei": "0.005",
   "endpointV2Address": "0x1a44076050125825900e736c501f859c50fE728c",
-  "remoteChainIds": "[30110,30109]",
-  "remoteLzReadSupportedChainIds": "[30110,30109,30316]",
+  "remoteChainIds": "[30110,30109,30316]",
+  "remoteLzReadSupportedChainIds": "[30110,30109]",
   "minDelay": "10",
   "proposers": "[0x52370eE170c0E2767B32687166791973a0dE7966]",
   "executors": "[0x52370eE170c0E2767B32687166791973a0dE7966]",
@@ -15,5 +15,6 @@
   "myGovernorAddress": "0xb1ae1Ab21f872bCD17f706Ee73327fB58e9A0Da6",
   "votingMachineLzReadPolygonAddress": "0x000000000000000000000000161977565b31B53Eaa6c977083eC5B19Cf176292",
   "votingMachineLzReadArbitrumAddress": "0x00000000000000000000000031D3202d8744B16A120117A053459DDFAE93c855",
-  "votingMachineLzReadHederaAddress": "0x0000000000000000000000007bedCA17D29e53C8062d10902a6219F8d1E3B9B5"
+  "votingMachineLzReadHederaAddress": "0x0000000000000000000000007bedCA17D29e53C8062d10902a6219F8d1E3B9B5",
+  "governanceExecutorAddress": "0xBF5609fD47508143b7E9A1dcf0B814fFDB451FF0"
 }
