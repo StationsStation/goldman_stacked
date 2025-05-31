@@ -49,9 +49,11 @@ hashes: clean
 	poetry run autonomy push-all
 
 lint:
+	poetry run adev -v -n 0 lint -p controller_api
 	poetry run adev -v -n 0 lint
 
 fmt: 
+	poetry run adev -n 0 fmt -p controller_api
 	poetry run adev -n 0 fmt
 
 test:
