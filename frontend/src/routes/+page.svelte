@@ -1,11 +1,6 @@
 
 <script lang="ts">
-  // This is a placeholder script block. You can add your TypeScript code here if needed.
-   //   We import the Counvil component from the library
-
     import Council from '$lib/components/Council.svelte';
-    
-
 </script>
 
 <!-- Skelingto card -->
