@@ -27,7 +27,7 @@ echo $castArgs
 echo "$result" | grep "status" | awk "{print $1}"
 
 # Read channel set true
-castArgs="$governorRelayLZAddress setReadChannel(uint32,bool) 4294967295 true"
+castArgs="$votingMachineLzReadAddress setReadChannel(uint32,bool) 4294967295 true"
 castCmd="$castHeader $castArgs"
 result=$($castCmd)
 echo $castArgs
