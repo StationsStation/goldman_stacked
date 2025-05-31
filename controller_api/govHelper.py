@@ -3,13 +3,13 @@
 import requests
 from web3 import Web3
 from dotenv import load_dotenv
-
+import json
 
 load_dotenv()
 
 RPC = "https://base.drpc.org"
 with open("abi.json", encoding="utf-8") as file:
-    ABI = file.read
+    ABI = file.read()
 
 ADDRESS = "0xb1ae1Ab21f872bCD17f706Ee73327fB58e9A0Da6"
 
@@ -37,7 +37,15 @@ def get_proposals() -> list[dict]:
     """
 
     response = requests.post(PONDER_URL, json={"query": query}, headers=HEADERS, timeout=60)
-    return response.json()["data"]
+
+    proposals = response.json()["data"]["proposals"]["items"]
+    for proposal in proposals:
+        status = governor_contract.functions.state(proposal["proposalId"]).call()
+        proposal["status"] = status
+        votes = get_votes(proposal["proposalId"])
+        proposal["votes"] = votes
+
+    return proposals
 
 
 def get_votes(proposal_id: str) -> list[dict]:
@@ -55,3 +63,5 @@ def get_votes(proposal_id: str) -> list[dict]:
 
     response = requests.post(PONDER_URL, json={"query": query}, headers=HEADERS, timeout=60)
     return response.json()["data"]
+
+get_proposals()
