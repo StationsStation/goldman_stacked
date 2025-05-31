@@ -22,4 +22,4 @@ services:
       context: ./ponder
       dockerfile: Dockerfile
     ports:
-      - "8000:42069"
+    - "42069:42069"
