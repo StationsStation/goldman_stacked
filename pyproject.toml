@@ -29,6 +29,7 @@ open-autonomy = "==0.19.7"
 autonomy-dev = { extras = ["all"], version = ">=0.2.64,<=0.2.153" }
 aiohttp = "^3.12.4"
 connexion = "<3"
+pydantic = "^2.11.5"
 
 [tool.poetry.group.dev.dependencies]
 
