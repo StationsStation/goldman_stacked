@@ -12,7 +12,7 @@ log = logging.getLogger(__name__)
 def get_agents() -> list[dict]:
     """Get all agents."""
     with open("agents.yaml", encoding="utf-8") as yaml_file:
-        return yaml.safe_load(yaml_file)
+        return yaml.safe_load(yaml_file)["agents"]
 
     # To change output to json string, use json.dumps(data)
 
@@ -34,7 +34,7 @@ def post_agents(agent: dict) -> dict:
 def get_proposals() -> list[dict]:
     """Get all proposals."""
     with open("proposals.yaml", encoding="utf-8") as yaml_file:
-        return yaml.safe_load(yaml_file)
+        return yaml.safe_load(yaml_file)["proposals"]
 
     # To change output to json string, use json.dumps(data)
 
