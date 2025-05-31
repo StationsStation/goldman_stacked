@@ -1,0 +1,11 @@
+{
+  "providerName": "hedera",
+  "chainId": "295",
+  "networkURL": "https://mainnet.hashio.io/api",
+  "gasPriceInGwei": "50",
+  "endpointV2Address": "0x3A73033C0b1407574C76BdBAc67f126f6b4a9AA9",
+  "governorChainId": "30184",
+  "votingTokenAddress": "0x12a3A4A4b19B8Ba99ad11f5b36ED58E010A4a19E",
+  "votingMachineLzReadHederaAddress": "0x10100e74b7f706222f8a7c0be9fc7ae1717ad8b2",
+  "votingMachineLzReadAddress": "0x7bedCA17D29e53C8062d10902a6219F8d1E3B9B5"
+}
