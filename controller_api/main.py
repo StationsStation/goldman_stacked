@@ -53,13 +53,13 @@ def get_proposal(id: str) -> dict:
     return filtered_proposal[0]
 
 
-def post_proposal_vote(id: int, vote: dict) -> dict:
+def post_proposal_vote(id: str, vote: dict) -> dict:
     """Submit a vote on a proposal."""
     log.info(f"Vote submitted for proposal {id}: {vote}")
     return vote
 
 
-def get_proposal_vote(id: int, vote: dict) -> dict:
+def get_proposal_vote(id: str, vote: dict) -> dict:
     """Get a vote on a proposal."""
     log.info(f"Vote retrieved for proposal {id}: {vote}")
     return vote
