@@ -8,18 +8,18 @@ import { UlnConfig } from "@layerzerolabs/lz-evm-messagelib-v2/contracts/uln/Uln
 
 /// @title LayerZero Receive Configuration Script
 /// @notice Defines and applies ULN (DVN) config for inbound message verification via LayerZero Endpoint V2.
-contract SetReceiveConfigBaseLz is Script {
+contract SetReceiveConfigHederaBase is Script {
     // For ReadLib the only possible DVN config type is CONFIG_TYPE_READ_LID_CONFIG = 1: https://vscode.blockscan.com/42161/0xbcd4CADCac3F767C57c4F402932C4705DF62BEFf
     uint32 constant ULN_CONFIG_TYPE = 1;
 
     function run() external {
-        address endpoint = address(0x1a44076050125825900e736c501f859c50fE728c);
-        address oapp      = address(0xe07949B74bED0dac21BA74B4371155520FE6a560);
-        uint32 eid        = 4294967295;
-        address receiveLib= address(0x1273141a3f7923AA2d9edDfA402440cE075ed8Ff);
+        address endpoint = address(0x3A73033C0b1407574C76BdBAc67f126f6b4a9AA9);
+        address oapp      = address(0x7bedCA17D29e53C8062d10902a6219F8d1E3B9B5);
+        uint32 eid        = 30184;
+        address receiveLib = address(0xc1B621b18187F74c8F6D52a6F709Dd2780C09821);
         address signer    = address(0x52370eE170c0E2767B32687166791973a0dE7966);
         address[] memory requiredDVNs = new address[](1);
-        requiredDVNs[0] = address(0xB1473AC9f58FB27597a21710da9D1071841E8163);
+        requiredDVNs[0] = address(0xce8358bc28dd8296Ce8cAF1CD2b44787abd65887);
 
         /// @notice UlnConfig controls verification threshold for incoming messages
         /// @notice Receive config enforces these settings have been applied to the DVNs and Executor

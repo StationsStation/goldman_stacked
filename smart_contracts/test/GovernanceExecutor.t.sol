@@ -40,7 +40,7 @@ contract GovernanceExecutorTest is Test {
         vm.startPrank(OWNER);
         
         limitOrderProtocol = new MockLimitOrderProtocol();
-        executor = new GovernanceExecutor(TIMELOCK, address(limitOrderProtocol));
+        executor = new GovernanceExecutor(TIMELOCK);
         
         tokenA = new MockToken("Token A", "TKA");
         tokenB = new MockToken("Token B", "TKB");
@@ -50,7 +50,6 @@ contract GovernanceExecutorTest is Test {
 
     function testInitialSetup() public {
         assertEq(executor.timelock(), TIMELOCK);
-        assertEq(executor.limitOrderProtocol(), address(limitOrderProtocol));
     }
 
     function testExecuteOrder() public {

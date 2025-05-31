@@ -7,21 +7,21 @@ import { SetConfigParam } from "@layerzerolabs/lz-evm-protocol-v2/contracts/inte
 import { ExecutorConfig } from "@layerzerolabs/lz-evm-messagelib-v2/contracts/SendLibBase.sol";
 import { UlnConfig } from "@layerzerolabs/lz-evm-messagelib-v2/contracts/uln/UlnBase.sol";
 
-/// @title LayerZero Receive Configuration Script
+/// @title LayerZero Send Configuration Script
 /// @notice Defines and applies ULN (DVN) config for inbound message verification via LayerZero Endpoint V2.
-contract SetSendConfigBaseHedera is Script {
+contract SetSendConfigHederaBase is Script {
     uint32 constant EXECUTOR_CONFIG_TYPE = 1;
     uint32 constant ULN_CONFIG_TYPE = 2;
 
     /// @notice Broadcasts transactions to set both Send ULN and Executor configurations
     function run() external {
-        address endpoint = address(0x1a44076050125825900e736c501f859c50fE728c);
-        address oapp      = address(0xe07949B74bED0dac21BA74B4371155520FE6a560);
-        uint32 eid        = 30316;
-        address sendLib   = address(0xB5320B0B3a13cC860893E2Bd79FCd7e13484Dda2);
+        address endpoint = address(0x3A73033C0b1407574C76BdBAc67f126f6b4a9AA9);
+        address oapp      = address(0x7bedCA17D29e53C8062d10902a6219F8d1E3B9B5);
+        uint32 eid        = 30184;
+        address sendLib   = address(0x2367325334447C5E1E0f1b3a6fB947b262F58312);
         address signer    = address(0x52370eE170c0E2767B32687166791973a0dE7966);
         address[] memory requiredDVNs = new address[](1);
-        requiredDVNs[0] = address(0x9e059a54699a285714207b43B055483E78FAac25);
+        requiredDVNs[0] = address(0xce8358bc28dd8296Ce8cAF1CD2b44787abd65887);
 
         /// @notice ULNConfig defines security parameters (DVNs + confirmation threshold)
         /// @notice Send config requests these settings to be applied to the DVNs and Executor
@@ -40,7 +40,7 @@ contract SetSendConfigBaseHedera is Script {
         /// @notice ExecutorConfig sets message size limit + fee‑paying executor
         ExecutorConfig memory exec = ExecutorConfig({
             maxMessageSize: 10000,                                       // max bytes per cross-chain message
-            executor:       address(0x2CCA08ae69E0C44b18a57Ab2A87644234dAebaE4)  // address that pays destination execution fees
+            executor:       address(0xa20DB4Ffe74A31D17fc24BD32a7DD7555441058e)  // address that pays destination execution fees
         });
 
         bytes memory encodedUln  = abi.encode(uln);

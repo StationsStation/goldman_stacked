@@ -43,7 +43,7 @@ contract CallProposeBase is Script {
     uint128 public constant MSG_VALUE = 0;
 
     function run() external {
-        address governor = address(0x3070692B3A338ac2B583419c33CFeE641FC10c26);
+        address governor = address(0xE5Da5F4d8644A271226161a859c1177C5214c54e);
         address governanceExecutor = address(0xBF5609fD47508143b7E9A1dcf0B814fFDB451FF0);
         address signer = address(0x52370eE170c0E2767B32687166791973a0dE7966);
 
@@ -63,7 +63,9 @@ contract CallProposeBase is Script {
         //MessagingFee memory fee = _quote(31084, cmd, options, false);
 
         vm.startBroadcast(signer);
-        IGovernor(governor).propose{value: 2500000000000000}(targets, values, calldatas, description, options);
+        IGovernor(governor).propose{value: 1000000000000000}(targets, values, calldatas, description, options);
         vm.stopBroadcast();
     }
 }
+
+// https://layerzeroscan.com/tx/0x5c17d88a6a7917f6bd4f7503c0458ab8b24afffd75b9d88e49f68197652e2159

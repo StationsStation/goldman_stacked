@@ -91,6 +91,12 @@ contract GovernorRelayLZ is OAppRead, OAppOptionsType3 {
         emit VotingMachinesUpdated(newVotingMachines);
     }
 
+    /// @notice Thanks for making it virtual :).
+    function _payNative(uint256 _nativeFee) internal override returns (uint256 nativeFee) {
+        require(msg.value >= _nativeFee, "NotEnoughNative");
+        return _nativeFee;
+    }
+
     function sendProposalDetails(bytes32 proposalId, uint256 startTime, uint256 endTime, bytes calldata options) external payable {
         require(msg.sender == governor, "Only governor");
 
@@ -108,6 +114,11 @@ contract GovernorRelayLZ is OAppRead, OAppOptionsType3 {
 
         // Allow to vote for all the chains
         for (uint256 i = 0; i < numChains; ++i) {
+//            bytes memory callData = abi.encodeWithSignature("sendMessage(uint32,bytes,bytes)",
+//                remoteChainIds[i], payload, options);
+//            (bool success, ) = address(this).call{value: fees[i]}(callData);
+//            require(success, "Call failed");
+
             _lzSend(
                 remoteChainIds[i], // Destination chain's endpoint ID.
                 payload, // Encoded message payload being sent.
@@ -119,6 +130,18 @@ contract GovernorRelayLZ is OAppRead, OAppOptionsType3 {
 
         emit LZProposed(proposalId, startTime, endTime);
     }
+
+//    function sendMessage(uint32 chainId, bytes memory payload, bytes calldata options) external payable {
+//        require(msg.sender == address(this));
+//
+//        _lzSend(
+//            chainId, // Destination chain's endpoint ID.
+//            payload, // Encoded message payload being sent.
+//            options, // Message execution options (e.g., gas to use on destination).
+//            MessagingFee(msg.value, 0), // Fee struct containing native gas and ZRO token.
+//            payable(tx.origin) // The refund address in case the send call reverts.
+//        );
+//    }
 
     /// @notice Internal function to handle message responses.
     /// @dev _origin The origin information (unused in this implementation).
