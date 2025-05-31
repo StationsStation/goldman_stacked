@@ -22,6 +22,7 @@ interface IMessagingChannel {
 
 contract GovernorRelayLZ is OAppRead, OAppOptionsType3 {
     event GovernorUpdated(address indexed governor);
+    event VotingMachinesUpdated(address[] votingMachines);
     event LZProposed(bytes32 indexed proposalId, uint256 startTime, uint256 endTime);
     event LZTotalNumVotesCounted(bytes32 indexed proposalId, uint256 totalNumVotes);
     event LZProposalFinalizationInitiated(bytes32 indexed proposalId, bytes32 indexed guid);
@@ -38,7 +39,7 @@ contract GovernorRelayLZ is OAppRead, OAppOptionsType3 {
     // Some chains don't support LzRead, but we don't want to limit those not to vote
     uint256 public immutable numLzReadSupportedChains;
 
-    address public immutable votingMachine;
+    address[] public votingMachines;
 
     uint32[] public remoteChainIds;
     // Some chains don't support LzRead, but we don't want to limit those not to vote
@@ -52,14 +53,14 @@ contract GovernorRelayLZ is OAppRead, OAppOptionsType3 {
     constructor(
         address _endpoint,
         uint256[] memory _remoteChianIds,
-        uint256[] memory _remoteLzReadSupportedChainIds,
-        address _votingMachine
+        uint256[] memory _remoteLzReadSupportedChainIds
     )
         OAppRead(_endpoint, msg.sender) Ownable(msg.sender)
     {
         require(_remoteChianIds.length > 0, "Zero length array");
 
         remoteChainIds = new uint32[](_remoteChianIds.length);
+        votingMachines = new address[](_remoteChianIds.length);
         remoteLzReadSupportedChainIds = new uint32[](_remoteLzReadSupportedChainIds.length);
 
         for (uint256 i = 0; i < _remoteChianIds.length; ++i) {
@@ -71,13 +72,23 @@ contract GovernorRelayLZ is OAppRead, OAppOptionsType3 {
 
         numChains = _remoteChianIds.length;
         numLzReadSupportedChains = _remoteLzReadSupportedChainIds.length;
-        votingMachine = _votingMachine;
     }
 
     function changeGovernor(address newGovernor) external {
         governor = newGovernor;
 
         emit GovernorUpdated(newGovernor);
+    }
+
+    function changeVotingMachines(address[] memory newVotingMachines) external {
+        require(msg.sender == owner(), "Owner only");
+
+        require(newVotingMachines.length == votingMachines.length, "Wrong array length");
+        for (uint256 i = 0; i < numChains; ++i) {
+            votingMachines[i] = newVotingMachines[i];
+        }
+
+        emit VotingMachinesUpdated(newVotingMachines);
     }
 
     function sendProposalDetails(bytes32 proposalId, uint256 startTime, uint256 endTime, bytes calldata options) external payable {
@@ -147,7 +158,7 @@ contract GovernorRelayLZ is OAppRead, OAppOptionsType3 {
                 isBlockNum: false,
                 blockNumOrTimestamp: uint64(block.timestamp),
                 confirmations: 15,
-                to: votingMachine,
+                to: votingMachines[i],
                 callData: callData
             });
         }

@@ -64,13 +64,11 @@ contract TestGovernorRelayLZ is GovernorRelayLZ {
     constructor(
         address _endpoint,
         uint256[] memory _remoteChianIds,
-        uint256[] memory _remoteLzReadSupportedChainIds,
-        address _votingMachine
+        uint256[] memory _remoteLzReadSupportedChainIds
     ) GovernorRelayLZ(
         _endpoint,
         _remoteChianIds,
-        _remoteLzReadSupportedChainIds,
-        _votingMachine
+        _remoteLzReadSupportedChainIds
     ) {
         // No need to initialize arrays here as it's done in the base constructor
     }
@@ -128,8 +126,7 @@ contract GovernorRelayLZTest is Test {
         relay = new TestGovernorRelayLZ(
             address(endpoint),
             remoteChainIdsUint,
-            remoteLzReadSupportedChainIdsUint,
-            address(votingMachine)
+            remoteLzReadSupportedChainIdsUint
         );
         
         relay.changeGovernor(address(governor));
@@ -158,7 +155,6 @@ contract GovernorRelayLZTest is Test {
 
     function testInitialSetup() public {
         assertEq(relay.governor(), address(governor));
-        assertEq(relay.votingMachine(), address(votingMachine));
         assertEq(relay.numChains(), remoteChainIds.length);
         assertEq(relay.numLzReadSupportedChains(), remoteLzReadSupportedChainIds.length);
         
