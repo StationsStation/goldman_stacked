@@ -3,6 +3,14 @@
   import { onMount } from 'svelte';
   import { ArrowLeft, ArrowRight } from 'lucide-svelte';
 
+  import { DefaultService } from '$lib/api';
+  import { OpenAPI } from '$lib/api/core/OpenAPI';
+
+  import {Agent} from '$lib/api'
+
+
+    import { marked } from 'marked';
+
   let elemCarousel: HTMLDivElement;
   let elemCarouselLeft: HTMLButtonElement;
   let elemCarouselRight: HTMLButtonElement;
@@ -10,6 +18,23 @@
   let thumbEl: HTMLButtonElement;
 
   const generatedArray = Array.from({ length: 6 });
+
+  let councilMembers: Agent[] = [];
+
+  onMount(() => {
+    OpenAPI.BASE = 'http://localhost:5000';
+
+    console.log('Component is mounted in the browser!');
+    DefaultService.mainGetAgents()
+      .then((data) => {
+        console.log('Fetched via DefaultService:', data);
+        councilMembers = data;
+      })
+      .catch((err) => {
+        console.error('API error:', err);
+      });
+  });
+
 
   function carouselLeft() {
     if (!elemCarousel) return;
@@ -60,7 +85,7 @@
   }
 
   .card {
-    background-color: white;
+    background-color: black;
     border-radius: 1rem;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
   }
@@ -68,7 +93,7 @@
 
 <div class="w-full space-y-6">
   <!-- Carousel -->
-  <div class="card p-4 grid grid-cols-[auto_1fr_auto] gap-4 items-center">
+  <div class="card p-4 grid grid-cols-[auto_1fr_auto] gap-4 items-center bg-grey">
     <!-- Button: Left -->
     <button bind:this={elemCarouselLeft} type="button" class="btn-icon preset-filled" on:click={carouselLeft}>
       <ArrowLeft size={16} />
@@ -79,21 +104,21 @@
       bind:this={elemCarousel}
       class="snap-x snap-mandatory scroll-smooth flex overflow-x-auto"
     >
-      {#each generatedArray as _, i}
+      {#each councilMembers as agent, _}
         <!-- Single Carousel Slide -->
         <div class="snap-center flex-shrink-0 w-[1024px] flex gap-6 items-center p-4">
           <!-- Image -->
           <img
             class="rounded-container w-1/2 object-cover h-full"
-            src={`https://picsum.photos/seed/${i + 1}/1024/768`}
-            alt={`full-${i}`}
+            src={agent.profilePicture}
+            alt={`full-${agent.address}`}
             loading="lazy"
           />
 
           <!-- Card Description -->
-          <div class="card w-1/2 p-6 h-full">
-            <h2 class="text-xl font-bold mb-2">Image {i + 1}</h2>
-            <p class="text-gray-600">This is a description for image {i + 1}.</p>
+          <div class="card w-1/2 p-6 h-full shadow-md rounded-lg bg-grey">
+            <h1 class="text-2xl font-bold text-gray-200 mb-2">{agent.name}</h1>
+            <p class="text-gray-200 p-2">{agent.profile}</p>
           </div>
         </div>
       {/each}
@@ -107,7 +132,7 @@
 
   <!-- Thumbnails -->
   <div class="card p-4 grid grid-cols-6 gap-4">
-    {#each generatedArray as _, i}
+    {#each councilMembers as agent, i}
       <button
         bind:this={thumbEl}
         type="button"
@@ -115,7 +140,8 @@
       >
         <img
           class="rounded-container hover:brightness-125"
-          src={`https://picsum.photos/seed/${i + 1}/256`}
+          src={agent.profilePicture}
+          sizes=256
           alt={`thumb-${i}`}
           loading="lazy"
         />

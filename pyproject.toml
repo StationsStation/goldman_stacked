@@ -29,6 +29,7 @@ open-autonomy = "==0.19.7"
 autonomy-dev = {extras = ["all"], version = ">=0.2.64,<=0.2.153"}
 aiohttp = "^3.12.4"
 connexion = "<3"
+flask-cors = "^6.0.0"
 
 [tool.poetry.group.dev.dependencies]
 
