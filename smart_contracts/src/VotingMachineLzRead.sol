@@ -25,10 +25,11 @@ contract VotingMachineLzRead is OAppRead, OAppOptionsType3 {
     uint16 public constant READ_MSG_TYPE = 0;
 
     address public immutable votingToken;
-    uint256 public immutable governorChainId;
+    uint32 public immutable governorChainId;
 
     mapping(bytes32 => VoteRequest) public pendingVotes;
     mapping(bytes32 => mapping(address => uint256)) public voteWeight;
+    mapping(bytes32 => uint256) public totalNumVotes;
     mapping(bytes32 => mapping(address => bool)) public hasVoted;
     mapping(bytes32 => uint256) public proposalSnapshots;
     mapping(bytes32 => uint256) public proposalSnapshotEndTimes;
@@ -42,7 +43,7 @@ contract VotingMachineLzRead is OAppRead, OAppOptionsType3 {
         OAppRead(_endpoint, msg.sender) Ownable(msg.sender)
     {
         votingToken = _votingToken;
-        governorChainId = _governorChainId;
+        governorChainId = uint32(_governorChainId);
     }
 
     /// @notice Internal function to handle incoming messages and read responses.
@@ -113,7 +114,9 @@ contract VotingMachineLzRead is OAppRead, OAppOptionsType3 {
         require(!hasVoted[vote.proposalId][vote.voter], "Already voted");
 
         uint256 power = abi.decode(_message, (uint256));
+        require(power > 0, "Voting power is zero");
         voteWeight[vote.proposalId][vote.voter] = power;
+        totalNumVotes[vote.proposalId] += power;
         hasVoted[vote.proposalId][vote.voter] = true;
 
         emit VoteCast(vote.proposalId, vote.voter, power);
@@ -123,7 +126,7 @@ contract VotingMachineLzRead is OAppRead, OAppOptionsType3 {
 
     /// @dev Constructs a command to query votes of msg.sender on a Governor chain Id.
     /// @param startTime Proposal voting start time.
-    /// @return cmd The encoded command to request Uniswap quotes.
+    /// @return The encoded request.
     function _getCmd(uint256 startTime) internal view returns (bytes memory) {
         bytes memory callData = abi.encodeWithSelector(IVotingToken.getPastVotes.selector, msg.sender, startTime);
 
@@ -148,12 +151,18 @@ contract VotingMachineLzRead is OAppRead, OAppOptionsType3 {
         bytes32 proposalId,
         bytes calldata extraOptions
     ) external payable returns (MessagingReceipt memory receipt) {
+        require(block.timestamp <= proposalSnapshotEndTimes[proposalId], "Voting has ended");
         require(!hasVoted[proposalId][msg.sender], "Already voted");
 
         uint256 startTime = proposalSnapshots[proposalId];
+        require(startTime > 0, "Proposal Id is not registered");
         require(block.timestamp >= startTime, "Voting has not started yet");
 
         bytes memory cmd = _getCmd(startTime);
+
+        MessagingFee memory fee = _quote(READ_CHANNEL, cmd, extraOptions, false);
+        require(msg.value >= fee.nativeFee);
+
         receipt =
             _lzSend(
                 READ_CHANNEL,
@@ -164,22 +173,17 @@ contract VotingMachineLzRead is OAppRead, OAppOptionsType3 {
             );
 
         pendingVotes[receipt.guid] = VoteRequest(proposalId, msg.sender);
+
         emit LzVoteRequested(receipt.guid, proposalId, msg.sender);
     }
 
     function quote(uint256 startTime, bytes calldata _options) external view returns (uint256, uint256) {
         bytes memory cmd = _getCmd(startTime);
-        MessagingFee memory fee = _quote(uint32(governorChainId), cmd, _options, false);
+        MessagingFee memory fee = _quote(governorChainId, cmd, _options, false);
         return (fee.nativeFee, fee.lzTokenFee);
     }
 
     function getVoteWeight(bytes32 proposalId, address voter) external view returns (uint256) {
         return voteWeight[proposalId][voter];
-    }
-
-    function totalVotes(bytes32 proposalId, address[] calldata voters) public view returns (uint256 total) {
-        for (uint256 i = 0; i < voters.length; i++) {
-            total += voteWeight[proposalId][voters[i]];
-        }
     }
 }
