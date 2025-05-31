@@ -18,7 +18,7 @@ name = "goldman_stacked"
 version = "0.1.0"
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.14"
+python = ">=3.10,<3.13"
 open-aea-ledger-solana = "==1.65.0"
 open-aea-ledger-cosmos = "==1.65.0"
 open-aea-ledger-ethereum = "==1.65.0"
@@ -26,7 +26,7 @@ open-aea = "==1.65.0"
 open-aea-cli-ipfs = "==1.65.0"
 open-aea-test-autonomy = "==0.19.7"
 open-autonomy = "==0.19.7"
-autonomy-dev = {extras = ["all"], version = ">=0.2.64,<=0.2.153"}
+autonomy-dev = { extras = ["all"], version = ">=0.2.64,<=0.2.153" }
 aiohttp = "^3.12.4"
 connexion = "<3"
 
