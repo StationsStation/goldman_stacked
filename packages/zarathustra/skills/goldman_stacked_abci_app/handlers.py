@@ -20,6 +20,7 @@
 
 import json
 from typing import cast
+import itertools
 
 from aea.skills.base import Handler
 from aea.protocols.base import Message
@@ -42,6 +43,17 @@ from packages.eightballer.protocols.chatroom.dialogues import (
     ChatroomDialogue as TelegramDialogue,
     ChatroomDialogues as TelegramDialogues,
 )
+from packages.zarathustra.connections.openai_api.connection import reconstitute
+from packages.zarathustra.protocols.llm_chat_completion.message import (
+    LlmChatCompletionMessage,
+)
+from packages.zarathustra.protocols.llm_chat_completion.dialogues import (
+    LlmChatCompletionDialogue,
+    LlmChatCompletionDialogues,
+)
+
+
+counter = itertools.count()
 
 
 class TelegramHandler(Handler):
@@ -79,6 +91,64 @@ class TelegramHandler(Handler):
 
     @property
     def strategy(self) -> GoldmanStackedStrategy:
+        """Get the strategy."""
+        return cast(GoldmanStackedStrategy, self.context.asylum_strategy)
+
+    def setup(self):
+        """Implement the setup."""
+
+    def teardown(self):
+        """Implement the handler teardown."""
+
+
+class LlmChatCompletionHandler(Handler):
+    """This implements the LlmChatCompletion handler."""
+
+    SUPPORTED_PROTOCOL = LlmChatCompletionMessage.protocol_id
+
+    def handle(self, message: Message) -> None:  # noqa: PLR0914
+        """Implement the reaction to an envelope."""
+
+        llm_chat_completion_msg = cast(LlmChatCompletionMessage, message)
+        if (
+            llm_chat_completion_msg.performative
+            == LlmChatCompletionMessage.Performative.ERROR
+        ):
+            self.context.logger.error(f"Received error={llm_chat_completion_msg}")
+            return
+
+        if (
+            llm_chat_completion_msg.performative
+            == LlmChatCompletionMessage.Performative.RESPONSE
+        ):
+            self.context.logger.debug(
+                f"received LLM chat completion message={llm_chat_completion_msg}"
+            )
+
+        llm_chat_completion_dialogues = cast(
+            LlmChatCompletionDialogues, self.context.llm_chat_completion_dialogues
+        )
+        llm_chat_completion_dialogue = cast(
+            LlmChatCompletionDialogue,
+            llm_chat_completion_dialogues.update(llm_chat_completion_msg),
+        )
+
+        if not llm_chat_completion_dialogue:
+            self.context.logger.debug(
+                f"received invalid llm chat completion message={llm_chat_completion_msg}, unidentified dialogue."
+            )
+
+        llm_chat_completion = reconstitute(message)
+        self.context.logger.debug(f"Reconstituted: {llm_chat_completion}")
+        text = llm_chat_completion.choices[0].message.content
+        if not self.context.asylum_strategy.user_persona:
+            self.context.asylum_strategy.user_persona = text
+
+        self.context.asylum_strategy.chat_history.append(text)
+        self.strategy.llm_responses.append((LLMActions.REPLY, text))
+
+    @property
+    def strategy(self):
         """Get the strategy."""
         return cast(GoldmanStackedStrategy, self.context.asylum_strategy)
 

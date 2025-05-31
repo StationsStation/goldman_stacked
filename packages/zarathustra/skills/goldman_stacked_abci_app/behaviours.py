@@ -36,6 +36,19 @@ from packages.zarathustra.skills.goldman_stacked_abci_app.strategy import (
 from packages.eightballer.connections.telegram_wrapper.connection import (
     CONNECTION_ID as TELEGRAM_CONNECTION_ID,
 )
+from packages.zarathustra.connections.openai_api.connection import (
+    CONNECTION_ID as OPENAI_API_CONNECTION_ID,
+    Model as LLMModel,
+)
+from packages.zarathustra.protocols.llm_chat_completion.message import (
+    LlmChatCompletionMessage,
+)
+from packages.zarathustra.protocols.llm_chat_completion.custom_types import (
+    Role,
+    Kwargs,
+    Message,
+    Messages,
+)
 
 
 class GoldmanStackedABCIAppEvents(Enum):
