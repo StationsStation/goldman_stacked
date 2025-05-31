@@ -2,6 +2,7 @@
 
 import logging
 
+import yaml
 import connexion
 
 
@@ -10,12 +11,19 @@ log = logging.getLogger(__name__)
 
 def get_agents() -> list[dict]:
     """Get all agents."""
-    return [{"id": 1, "name": "Agent 1"}, {"id": 2, "name": "Agent 2"}]
+    with open("agents.yaml", encoding="utf-8") as yaml_file:
+        return yaml.safe_load(yaml_file)
+
+    # To change output to json string, use json.dumps(data)
 
 
-def get_agent(id: int) -> dict:
+def get_agent(id: str) -> dict:
     """Get an agent by ID."""
-    return {"id": id, "name": "Agent 1"}
+    with open("agents.yaml", encoding="utf-8") as yaml_file:
+        data = yaml.safe_load(yaml_file)
+
+    filtered_agent = [agent for agent in data["agents"] if agent["id"] == id]
+    return filtered_agent[0]
 
 
 def post_agents(agent: dict) -> dict:
@@ -25,7 +33,10 @@ def post_agents(agent: dict) -> dict:
 
 def get_proposals() -> list[dict]:
     """Get all proposals."""
-    return [{"id": 1, "name": "Proposal 1"}, {"id": 2, "name": "Proposal 2"}]
+    with open("proposals.yaml", encoding="utf-8") as yaml_file:
+        return yaml.safe_load(yaml_file)
+
+    # To change output to json string, use json.dumps(data)
 
 
 def post_proposals(proposal: dict) -> dict:
@@ -33,9 +44,13 @@ def post_proposals(proposal: dict) -> dict:
     return proposal
 
 
-def get_proposal(id: int) -> dict:
+def get_proposal(id: str) -> dict:
     """Get a proposal by ID."""
-    return {"id": id, "name": "Proposal 1"}
+    with open("proposals.yaml", encoding="utf-8") as yaml_file:
+        data = yaml.safe_load(yaml_file)
+
+    filtered_proposal = [proposal for proposal in data["proposals"] if proposal["id"] == id]
+    return filtered_proposal[0]
 
 
 def post_proposal_vote(id: int, vote: dict) -> dict:

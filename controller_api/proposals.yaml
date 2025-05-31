@@ -1,0 +1,154 @@
+proposals:
+  - id: "f9eac1c9-d3b2-4b6c-b3a7-8abecdaf678d"
+    title: "Proposal to Increase the Block Size"
+    description: "Increase the block size limit to accommodate more transactions per block."
+    status: "Active"
+    createdBy:
+      id: "d7a3f94f-58e2-40a5-bd4b-9c4b62bbf04a"
+      name: "Warren Fluffet"
+      address: "0x1234567890abcdef1234567890abcdef12345678"
+      role: "council"
+    createdAt: "2025-05-30T12:00:00Z"
+    votes:
+      - voter:
+          id: "e8b4b8d7-539a-43e9-baff-1c2ab07b47bc"
+          name: "Scam Bankman Fraud"
+          address: "0xabcdef1234567890abcdef1234567890abcdef12"
+          role: "voter"
+        vote: "yes"
+        reason: "Supports scaling to handle future demand."
+      - voter:
+          id: "a2b5c7f3-4d8c-48bc-87b4-92d16adf5c4d"
+          name: "Chamath Dumpath"
+          address: "0x7890abcdef1234567890abcdef1234567890abcd"
+          role: "council"
+        vote: "no"
+        reason: "Concerns about centralization of power."
+      - voter:
+          id: "f3d7e0f9-4f3d-4c65-a1c4-431ab9cd6b4f"
+          name: "Augustin Carbombs"
+          address: "0x456789abcdef1234567890abcdef1234567890ef"
+          role: "voter"
+        vote: "abstain"
+        reason: "Neutral on the issue."
+
+  - id: "a1c7f2c1-cb61-4e25-a23c-3953f16c7e6a"
+    title: "Proposal to Implement Proof-of-Stake"
+    description: "Switch the consensus mechanism from proof-of-work to proof-of-stake."
+    status: "Pending"
+    createdBy:
+      id: "c5b7f4c3-7f84-40f4-828e-4b5d92af643a"
+      name: "Sudo Nakamoto"
+      address: "0x567890abcdef1234567890abcdef1234567890ab"
+      role: "council"
+    createdAt: "2025-05-29T11:00:00Z"
+    votes: []
+
+  - id: "bc3e7682-4345-497a-bd71-91ed9805c670"
+    title: "Proposal for New Governance Model"
+    description: "Implement a new decentralized governance model to reduce centralization."
+    status: "Queued"
+    createdBy:
+      id: "e8b4b8d7-539a-43e9-baff-1c2ab07b47bc"
+      name: "Scam Bankman Fraud"
+      address: "0xabcdef1234567890abcdef1234567890abcdef12"
+      role: "voter"
+    createdAt: "2025-05-25T09:00:00Z"
+    votes:
+      - voter:
+          id: "d7a3f94f-58e2-40a5-bd4b-9c4b62bbf04a"
+          name: "Warren Fluffet"
+          address: "0x1234567890abcdef1234567890abcdef12345678"
+          role: "council"
+        vote: "yes"
+        reason: "Supports more decentralization."
+      - voter:
+          id: "a2b5c7f3-4d8c-48bc-87b4-92d16adf5c4d"
+          name: "Chamath Dumpath"
+          address: "0x7890abcdef1234567890abcdef1234567890abcd"
+          role: "council"
+        vote: "no"
+        reason: "Concerns over efficiency."
+
+  - id: "f2d94f13-d5c7-4715-b8ba-092f1c6a75e7"
+    title: "Proposal to Introduce Token Burn Mechanism"
+    description: "Implement a token burn mechanism to reduce supply and increase value."
+    status: "Succeeded"
+    createdBy:
+      id: "f3d7e0f9-4f3d-4c65-a1c4-431ab9cd6b4f"
+      name: "Augustin Carbombs"
+      address: "0x456789abcdef1234567890abcdef1234567890ef"
+      role: "voter"
+    createdAt: "2025-05-20T14:30:00Z"
+    votes:
+      - voter:
+          id: "c5b7f4c3-7f84-40f4-828e-4b5d92af643a"
+          name: "Sudo Nakamoto"
+          address: "0x567890abcdef1234567890abcdef1234567890ab"
+          role: "council"
+        vote: "yes"
+        reason: "Supports deflationary models."
+      - voter:
+          id: "a2b5c7f3-4d8c-48bc-87b4-92d16adf5c4d"
+          name: "Chamath Dumpath"
+          address: "0x7890abcdef1234567890abcdef1234567890abcd"
+          role: "council"
+        vote: "yes"
+        reason: "Effective for long-term price stability."
+
+  - id: "c7d93f1e-78b5-4ed6-bc67-cf9e4b7fce53"
+    title: "Proposal to Approve New Developer Funding"
+    description: "Allocate additional funds for the development team."
+    status: "Canceled"
+    createdBy:
+      id: "d7a3f94f-58e2-40a5-bd4b-9c4b62bbf04a"
+      name: "Warren Fluffet"
+      address: "0x1234567890abcdef1234567890abcdef12345678"
+      role: "council"
+    createdAt: "2025-05-18T10:30:00Z"
+    votes:
+      - voter:
+          id: "e8b4b8d7-539a-43e9-baff-1c2ab07b47bc"
+          name: "Scam Bankman Fraud"
+          address: "0xabcdef1234567890abcdef1234567890abcdef12"
+          role: "voter"
+        vote: "no"
+        reason: "Budget is tight."
+
+  - id: "d8f42a7a-cf92-4cdb-91de-0e6766767645"
+    title: "Proposal to Launch New Marketing Campaign"
+    description: "Launch a new global marketing campaign to promote the platform."
+    status: "Pending"
+    createdBy:
+      id: "f3d7e0f9-4f3d-4c65-a1c4-431ab9cd6b4f"
+      name: "Augustin Carbombs"
+      address: "0x456789abcdef1234567890abcdef1234567890ef"
+      role: "voter"
+    createdAt: "2025-05-15T15:00:00Z"
+    votes: []
+
+  - id: "c0d825e7-e9d7-4528-b0d9-73b835a12875"
+    title: "Proposal to Reduce Transaction Fees"
+    description: "Reduce the transaction fees on all transfers within the network."
+    status: "Executed"
+    createdBy:
+      id: "a2b5c7f3-4d8c-48bc-87b4-92d16adf5c4d"
+      name: "Chamath Dumpath"
+      address: "0x7890abcdef1234567890abcdef1234567890abcd"
+      role: "council"
+    createdAt: "2025-05-10T08:00:00Z"
+    votes:
+      - voter:
+          id: "e8b4b8d7-539a-43e9-baff-1c2ab07b47bc"
+          name: "Scam Bankman Fraud"
+          address: "0xabcdef1234567890abcdef1234567890abcdef12"
+          role: "voter"
+        vote: "yes"
+        reason: "It will make the network more attractive for users."
+      - voter:
+          id: "f3d7e0f9-4f3d-4c65-a1c4-431ab9cd6b4f"
+          name: "Augustin Carbombs"
+          address: "0x456789abcdef1234567890abcdef1234567890ef"
+          role: "voter"
+        vote: "yes"
+        reason: "It will make the network more attractive for users."
