@@ -8,67 +8,124 @@ import { ReadCodecV1, EVMCallRequestV1 } from "@layerzerolabs/oapp-evm/contracts
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 
 interface IVotingToken {
-    function getVotes(address account, uint256 ts) external view returns (uint256);
+    function getPastVotes(address account, uint256 timepoint) external view returns (uint256);
 }
 
 
 contract VotingMachineLzRead is OAppRead, OAppOptionsType3 {
+    event ProposalRegistered(bytes32 indexed proposalId, uint256 startTime, uint256 endTime);
     event LzVoteRequested(bytes32 readId, bytes32 proposalId, address voter);
     event VoteCast(bytes32 proposalId, address voter, uint256 weight);
 
+    /// lzRead responses are sent from arbitrary channels with Endpoint IDs in the range of
+    /// `eid > 4294965694` (which is `type(uint32).max - 1600`).
+    uint32 public constant READ_CHANNEL_EID_THRESHOLD = 4294965694;
+    // lzRead specific channel: https://docs.layerzero.network/v2/deployments/read-contracts
+    uint32 public constant READ_CHANNEL = 4294967295;
+    uint16 public constant READ_MSG_TYPE = 0;
+
     address public immutable votingToken;
-    address public immutable governor;
     uint256 public immutable governorChainId;
 
     mapping(bytes32 => VoteRequest) public pendingVotes;
     mapping(bytes32 => mapping(address => uint256)) public voteWeight;
     mapping(bytes32 => mapping(address => bool)) public hasVoted;
     mapping(bytes32 => uint256) public proposalSnapshots;
+    mapping(bytes32 => uint256) public proposalSnapshotEndTimes;
 
     struct VoteRequest {
         bytes32 proposalId;
         address voter;
     }
 
-    constructor(address _endpoint, address _delegate, address _votingToken, address _governor, uint256 _governorChainId)
-        OAppRead(_endpoint, _delegate) Ownable(_delegate)
+    constructor(address _endpoint, address _votingToken, uint256 _governorChainId)
+        OAppRead(_endpoint, msg.sender) Ownable(msg.sender)
     {
         votingToken = _votingToken;
-        governor = _governor;
         governorChainId = _governorChainId;
     }
 
-    function registerSnapshot(bytes32 proposalId, uint256 snapshotBlock) external {
-        require(proposalSnapshots[proposalId] == 0, "Snapshot already set");
-        proposalSnapshots[proposalId] = snapshotBlock;
+    /// @notice Internal function to handle incoming messages and read responses.
+    /// @dev Filters messages based on `srcEid` to determine the type of incoming data.
+    /// @param _origin The origin information containing the source Endpoint ID (`srcEid`).
+    /// @param _guid The unique identifier for the received message.
+    /// @param _message The encoded message data.
+    /// @param _executor The executor address.
+    /// @param _extraData Additional data.
+    function _lzReceive(
+        Origin calldata _origin,
+        bytes32 _guid,
+        bytes calldata _message,
+        address _executor,
+        bytes calldata _extraData
+    ) internal virtual override {
+        /**
+         * @dev The `srcEid` (source Endpoint ID) is used to determine the type of incoming message.
+         * - If `srcEid` is greater than READ_CHANNEL_EID_THRESHOLD (4294965694),
+         *   it corresponds to arbitrary channel IDs for lzRead responses.
+         * - All other `srcEid` values correspond to standard LayerZero messages.
+         */
+        if (_origin.srcEid > READ_CHANNEL_EID_THRESHOLD) {
+            // Handle lzRead responses from arbitrary channels.
+            _readLzReceive(_origin, _guid, _message, _executor, _extraData);
+        } else {
+            // Handle standard LayerZero messages.
+            _messageLzReceive(_origin, _guid, _message, _executor, _extraData);
+        }
     }
 
-    /// @dev Handles the aggregated average price from Uniswap V3 pool responses received from LayerZero.
-    /// @dev Emits the AggregatedPrice event with the calculated average amount.
-    /// @param message Encoded average token output amount.
-    function _lzReceive(
-        Origin calldata /*_origin*/,
-        bytes32 guid,
-        bytes calldata message,
-        address /*_executor*/,
-        bytes calldata /*_extraData*/
-    ) internal override {
-        VoteRequest memory vote = pendingVotes[guid];
+    /// @notice Internal function to handle standard LayerZero messages.
+    /// @dev _origin The origin information (unused in this implementation).
+    /// @dev _guid The unique identifier for the received message (unused in this implementation).
+    /// @param _message The encoded message data.
+    /// @dev _executor The executor address (unused in this implementation).
+    /// @dev _extraData Additional data (unused in this implementation).
+    function _messageLzReceive(
+        Origin calldata /* _origin */,
+        bytes32 /* _guid */,
+        bytes calldata _message,
+        address /* _executor */,
+        bytes calldata /* _extraData */
+    ) internal virtual {
+        (bytes32 proposalId, uint256 startTime, uint256 endTime) = abi.decode(_message, (bytes32, uint256, uint256));
+        require(proposalSnapshots[proposalId] == 0, "Snapshot already set");
+
+        proposalSnapshots[proposalId] = startTime;
+        proposalSnapshotEndTimes[proposalId] = endTime;
+
+        emit ProposalRegistered(proposalId, startTime, endTime);
+    }
+
+    /// @notice Internal function to handle lzRead responses.
+    /// @dev _origin The origin information (unused in this implementation).
+    /// @dev _guid The unique identifier for the received message (unused in this implementation).
+    /// @param _message The encoded message data.
+    /// @dev _executor The executor address (unused in this implementation).
+    /// @dev _extraData Additional data (unused in this implementation).
+    function _readLzReceive(
+        Origin calldata /* _origin */,
+        bytes32 _guid,
+        bytes calldata _message,
+        address /* _executor */,
+        bytes calldata /* _extraData */
+    ) internal virtual {
+        VoteRequest memory vote = pendingVotes[_guid];
         require(!hasVoted[vote.proposalId][vote.voter], "Already voted");
 
-        uint256 power = abi.decode(message, (uint256));
+        uint256 power = abi.decode(_message, (uint256));
         voteWeight[vote.proposalId][vote.voter] = power;
         hasVoted[vote.proposalId][vote.voter] = true;
 
         emit VoteCast(vote.proposalId, vote.voter, power);
 
-        delete pendingVotes[guid];
+        delete pendingVotes[_guid];
     }
 
     /// @dev Constructs a command to query votes of msg.sender on a Governor chain Id.
+    /// @param startTime Proposal voting start time.
     /// @return cmd The encoded command to request Uniswap quotes.
-    function _getCmd() internal view returns (bytes memory) {
-        bytes memory callData = abi.encodeWithSelector(IVotingToken.getVotes.selector, msg.sender, block.timestamp);
+    function _getCmd(uint256 startTime) internal view returns (bytes memory) {
+        bytes memory callData = abi.encodeWithSelector(IVotingToken.getPastVotes.selector, msg.sender, startTime);
 
         EVMCallRequestV1[] memory readRequests = new EVMCallRequestV1[](1);
         readRequests[0] = EVMCallRequestV1({
@@ -85,6 +142,7 @@ contract VotingMachineLzRead is OAppRead, OAppOptionsType3 {
     }
 
     /// @dev Sends a read request to LayerZero, querying votes of msg.sender on a Governor chain Id.
+    /// @param proposalId Proposal Id.
     /// @return receipt The LayerZero messaging receipt for the request.
     function getVotesLzRead(
         bytes32 proposalId,
@@ -92,12 +150,15 @@ contract VotingMachineLzRead is OAppRead, OAppOptionsType3 {
     ) external payable returns (MessagingReceipt memory receipt) {
         require(!hasVoted[proposalId][msg.sender], "Already voted");
 
-        bytes memory cmd = _getCmd();
+        uint256 startTime = proposalSnapshots[proposalId];
+        require(block.timestamp >= startTime, "Voting has not started yet");
+
+        bytes memory cmd = _getCmd(startTime);
         receipt =
             _lzSend(
-                uint32(governorChainId),
+                READ_CHANNEL,
                 cmd,
-                combineOptions(uint32(governorChainId), uint16(0), extraOptions),
+                combineOptions(READ_CHANNEL, READ_MSG_TYPE, extraOptions),
                 MessagingFee(msg.value, 0),
                 payable(msg.sender)
             );
@@ -106,8 +167,8 @@ contract VotingMachineLzRead is OAppRead, OAppOptionsType3 {
         emit LzVoteRequested(receipt.guid, proposalId, msg.sender);
     }
 
-    function quote(bytes calldata _options) external view returns (uint256 nativeFee, uint256 lzTokenFee) {
-        bytes memory cmd = _getCmd();
+    function quote(uint256 startTime, bytes calldata _options) external view returns (uint256, uint256) {
+        bytes memory cmd = _getCmd(startTime);
         MessagingFee memory fee = _quote(uint32(governorChainId), cmd, _options, false);
         return (fee.nativeFee, fee.lzTokenFee);
     }
@@ -122,4 +183,3 @@ contract VotingMachineLzRead is OAppRead, OAppOptionsType3 {
         }
     }
 }
-
