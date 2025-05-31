@@ -14,3 +14,24 @@ keys.json
 
 agent/
 service/
+
+# From Ponder
+# Dependencies
+node_modules
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Misc
+.DS_Store
+
+# Env files
+.env*.local
+
+# Ponder
+ponder/goldman-stacked/generated/
+ponder/goldman-stacked/.ponder/
+
