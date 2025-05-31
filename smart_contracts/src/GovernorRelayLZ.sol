@@ -164,6 +164,7 @@ contract GovernorRelayLZ is OAppRead, OAppOptionsType3 {
         return ReadCodecV1.encode(0, readRequests, computeSettings);
     }
 
+    /// @notice For the simplicity no sync is taken care of such that users don't vote more than from one chain.
     function finalizeProposalVotes(bytes32 proposalId, bytes calldata extraOptions) external payable {
         require(msg.sender == governor, "Only governor");
 
