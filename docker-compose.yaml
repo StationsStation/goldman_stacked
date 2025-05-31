@@ -17,3 +17,9 @@ services:
     - "3000:3000"
 
       
+  ponder:
+    build:
+      context: ./ponder
+      dockerfile: Dockerfile
+    ports:
+      - "8000:42069"
