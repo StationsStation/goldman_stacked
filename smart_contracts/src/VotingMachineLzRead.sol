@@ -15,7 +15,7 @@ interface IVotingToken {
 contract VotingMachineLzRead is OAppRead, OAppOptionsType3 {
     event ProposalRegistered(bytes32 indexed proposalId, uint256 startTime, uint256 endTime);
     event LzVoteRequested(bytes32 readId, bytes32 proposalId, address voter);
-    event VoteCast(bytes32 proposalId, address voter, uint256 weight);
+    event VoteCast(address indexed voter, uint256 proposalId, uint8 support, uint256 weight, string reason);
 
     /// lzRead responses are sent from arbitrary channels with Endpoint IDs in the range of
     /// `eid > 4294965694` (which is `type(uint32).max - 1600`).
@@ -98,6 +98,7 @@ contract VotingMachineLzRead is OAppRead, OAppOptionsType3 {
     }
 
     /// @notice Internal function to handle lzRead responses.
+    /// @notice For the simplicity no sync is taken care of such that users don't vote more than from one chain.
     /// @dev _origin The origin information (unused in this implementation).
     /// @dev _guid The unique identifier for the received message (unused in this implementation).
     /// @param _message The encoded message data.
@@ -119,7 +120,9 @@ contract VotingMachineLzRead is OAppRead, OAppOptionsType3 {
         totalNumVotes[vote.proposalId] += power;
         hasVoted[vote.proposalId][vote.voter] = true;
 
-        emit VoteCast(vote.proposalId, vote.voter, power);
+        // Matching proposal Id vote cast on L1
+        // Note: by default the count is always For
+        emit VoteCast(vote.voter, uint256(vote.proposalId), uint8(1), power, "");
 
         delete pendingVotes[_guid];
     }

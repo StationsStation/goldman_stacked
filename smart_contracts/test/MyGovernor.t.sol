@@ -3,7 +3,7 @@ pragma solidity ^0.8.30;
 
 import "forge-std/Test.sol";
 import "../src/MyGovernor.sol";
-import "../src/MyVotesToken.sol";
+import "../src/VotingToken.sol";
 import "@openzeppelin/contracts/governance/TimelockController.sol";
 import "@openzeppelin/contracts/governance/IGovernor.sol";
 
@@ -39,7 +39,7 @@ contract MockGovernorRelay is IGovernorRelay {
 
 contract MyGovernorTest is Test {
     MyGovernor public governor;
-    MyVotesToken public token;
+    VotingToken public token;
     TimelockController public timelock;
     MockGovernorRelay public relay;
 
@@ -52,7 +52,7 @@ contract MyGovernorTest is Test {
         vm.startPrank(OWNER);
         
         // Deploy token - 1_000_000 tokens are minted to OWNER
-        token = new MyVotesToken();
+        token = new VotingToken();
         
         // Setup timelock roles
         proposers = new address[](1);
@@ -136,7 +136,7 @@ contract MyGovernorTest is Test {
     }
 
     function testVotingPeriod() public {
-        assertEq(governor.votingPeriod(), 1 weeks);
+        assertEq(governor.votingPeriod(), 1 hours);
     }
 
     function testProposalLifecycle() public {
