@@ -68,5 +68,4 @@ def get_proposal_vote(id: str, vote: dict) -> dict:
 app = connexion.FlaskApp(__name__, specification_dir="../specs/")
 app.add_api("controller_spec.yaml", arguments={"title": "Controller API"})
 
-
 app.run()
