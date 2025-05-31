@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.30;
 
 interface ILimitOrderProtocol {
     function fillOrder(
@@ -12,32 +12,33 @@ interface ILimitOrderProtocol {
 }
 
 contract GovernanceExecutor {
+    event OrderExecuted(bytes32 indexed orderHash);
+
     bytes4 constant MAGICVALUE = 0x1626ba7e; // ERC-1271
     bytes4 constant INVALID_SIGNATURE = 0xffffffff;
 
-    mapping(bytes32 => bool) public approvedHashes;
-    mapping(uint256 => bool) public executedProposals;
-
+    uint256 public nonce;
+    address public immutable timelock;
     address public limitOrderProtocol;
 
-    constructor(address _limitOrderProtocol) {
+    mapping(bytes32 => bool) public approvedHashes;
+
+    constructor(address _timelock, address _limitOrderProtocol) {
+        timelock = _timelock;
         limitOrderProtocol = _limitOrderProtocol;
     }
 
     /// @notice Утверждение и исполнение лимитного ордера через голосование DAO
     function execute(
-        uint256 proposalId,
         address makerAsset,
         address takerAsset,
         uint256 makingAmount,
         uint256 takingAmount,
-        bytes calldata predicate,
-        bytes calldata permit,
-        bytes calldata interaction,
-        bytes calldata signature
+        bytes memory predicate,
+        bytes memory permit,
+        bytes memory interaction
     ) external {
-        require(!executedProposals[proposalId], "Proposal already executed");
-        executedProposals[proposalId] = true;
+        require(msg.sender == timelock, "Timelock only");
 
         // Формируем order struct как bytes (ABI-encoded), без подписи
         bytes memory order = abi.encode(
@@ -54,16 +55,21 @@ contract GovernanceExecutor {
             "", // getTakingAmount
             predicate,
             permit,
-            interaction
+            interaction,
+            nonce++
         );
 
         // Хэшируем order как обычно делается в LimitOrderProtocol
         bytes32 orderHash = keccak256(order);
 
+        // The same order must not be approved twice by the governance
+        require(!approvedHashes[orderHash], "Order has been already approved");
+
         // DAO голосованием одобряет хэш ордера
         approvedHashes[orderHash] = true;
 
         // emit order for off-chain
+        emit OrderExecuted(orderHash);
     }
 
     /// @notice ERC-1271 поддержка подписи ордера контрактом
@@ -74,4 +80,4 @@ contract GovernanceExecutor {
             return INVALID_SIGNATURE;
         }
     }
-} 
+}

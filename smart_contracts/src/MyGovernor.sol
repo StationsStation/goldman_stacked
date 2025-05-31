@@ -8,13 +8,20 @@ import {GovernorVotes} from "@openzeppelin/contracts/governance/extensions/Gover
 import {GovernorVotesQuorumFraction} from "@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFraction.sol";
 import {IVotes} from "@openzeppelin/contracts/governance/utils/IVotes.sol";
 import {TimelockController} from "@openzeppelin/contracts/governance/TimelockController.sol";
+import {Governor} from "../lib/openzeppelin-contracts/contracts/governance/Governor.sol";
 
 interface IGovernorRelay {
     function sendProposalDetails(bytes32 proposalId, uint256 startTime, uint256 endTime, bytes calldata options) external payable;
+    function finalizeProposalVotes(bytes32 proposalId, bytes calldata options) external payable;
 }
 
 contract MyGovernor is Governor, GovernorCountingSimple, GovernorVotes, GovernorVotesQuorumFraction, GovernorTimelockControl {
+    event GovernorRelayUpdated(address indexed newGovernorRelay);
+    event ProposalIdCountsRecorded(uint256 indexed proposalId, uint256 totalNumVotes);
+
     address public immutable governorRelay;
+
+    mapping(uint256 => uint256) public mapFinalizedProposalIdCounts;
 
     constructor(IVotes _token, TimelockController _timelock, address _governorRelay)
         Governor("MyGovernor")
@@ -51,16 +58,68 @@ contract MyGovernor is Governor, GovernorCountingSimple, GovernorVotes, Governor
         proposalId = super.propose(targets, values, calldatas, description);
         uint256 startTime = proposalSnapshot(proposalId);
         uint256 endTime = proposalDeadline(proposalId);
+
         IGovernorRelay(governorRelay).sendProposalDetails{value: msg.value}(bytes32(proposalId), startTime, endTime, options);
+    }
+
+    function finalizeProposalVotes(uint256 proposalId, bytes calldata options) external payable {
+        ProposalState curState = super.state(proposalId);
+
+        // Check that the proposal is not yet finalized
+        if (curState == ProposalState.Defeated || curState == ProposalState.Succeeded) {
+            require(mapFinalizedProposalIdCounts[proposalId] == 0, "Proposal is already finalized");
+
+            IGovernorRelay(governorRelay).finalizeProposalVotes{value: msg.value}(bytes32(proposalId), options);
+        }
+    }
+
+    function recordFinalizedProposalVotes(uint256 proposalId, uint256 totalNumVotes) external {
+        require(msg.sender == governorRelay, "Only governor relay");
+
+        mapFinalizedProposalIdCounts[proposalId] = totalNumVotes;
+
+        emit ProposalIdCountsRecorded(proposalId, totalNumVotes);
+    }
+
+    /// @notice For the sake of simplicity we only vote For cross-chain.
+    function proposalVotes(uint256 proposalId) public view override returns (uint256, uint256 forVotes, uint256) {
+        // Get for votes
+        (, forVotes, ) = super.proposalVotes(proposalId);
+
+        // Add cross-chain obtained votes into the proposal votes on a main governing chain
+        forVotes += mapFinalizedProposalIdCounts[proposalId];
+
+        return (0, forVotes, 0);
+    }
+
+    /// @notice For the sake of simplicity we only vote For cross-chain.
+    function _quorumReached(uint256 proposalId) internal view override(Governor, GovernorCountingSimple) returns (bool) {
+        // Get for votes
+        (, uint256 forVotes, ) = proposalVotes(proposalId);
+
+        return quorum(proposalSnapshot(proposalId)) <= forVotes;
+    }
+
+    /// @notice For the sake of simplicity we only vote For cross-chain.
+    function _voteSucceeded(uint256 proposalId) internal view override(Governor, GovernorCountingSimple) returns (bool) {
+        // Get for votes
+        (, uint256 forVotes, ) = proposalVotes(proposalId);
+
+        return forVotes > 0;
     }
 
     function state(uint256 proposalId)
         public
         view
         override(Governor, GovernorTimelockControl)
-        returns (ProposalState)
+        returns (ProposalState curState)
     {
-        return super.state(proposalId);
+        curState = super.state(proposalId);
+
+        // Check that the proposal is finalized
+        if (curState == ProposalState.Defeated || curState == ProposalState.Succeeded) {
+            require(mapFinalizedProposalIdCounts[proposalId] > 0, "Proposal voting has ended, but was not finalized yet");
+        }
     }
 
     function proposalNeedsQueuing(uint256 proposalId)
