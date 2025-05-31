@@ -9,14 +9,14 @@ alphabet_in:
 - PERSONA_EXISTS
 - NO_PROPOSALS
 - DONE
-default_start_state: CheckProposalsRound
+default_start_state: InitialStateRound
 final_states: []
 label: GoldmanStackedAbciApp
 start_states:
-- CheckProposalsRound
+- InitialStateRound
 states:
 - NotifyUsersRound
-- InitialState
+- InitialStateRound
 - AICouncilNegotiationRound
 - WaitBeforeRetryRound
 - CheckProposalsRound
@@ -35,9 +35,9 @@ transition_func:
   (ConstructPersonaRound, ERROR): WaitBeforeRetryRound
   (ExecuteWorkflowRound, DONE): NotifyUsersRound
   (ExecuteWorkflowRound, ERROR): WaitBeforeRetryRound
-  (InitialState, ERROR): WaitBeforeRetryRound
-  (InitialState, PERSONA_EXISTS): CheckProposalsRound
-  (InitialState, PERSONA_MISSING): ConstructPersonaRound
+  (InitialStateRound, ERROR): WaitBeforeRetryRound
+  (InitialStateRound, PERSONA_EXISTS): CheckProposalsRound
+  (InitialStateRound, PERSONA_MISSING): ConstructPersonaRound
   (NotifyUsersRound, DONE): CheckProposalsRound
   (NotifyUsersRound, ERROR): WaitBeforeRetryRound
-  (WaitBeforeRetryRound, DONE): InitialState
+  (WaitBeforeRetryRound, DONE): InitialStateRound

@@ -1,8 +1,8 @@
 graph TD
   %%============ Initial Bootstrap ============%%
-  InitialState -->|PERSONA_MISSING| ConstructPersonaRound
-  InitialState -->|PERSONA_EXISTS| CheckProposalsRound
-  InitialState -->|ERROR| WaitBeforeRetryRound
+  InitialStateRound -->|PERSONA_MISSING| ConstructPersonaRound
+  InitialStateRound -->|PERSONA_EXISTS| CheckProposalsRound
+  InitialStateRound -->|ERROR| WaitBeforeRetryRound
 
   ConstructPersonaRound -->|DONE| CheckProposalsRound
   ConstructPersonaRound -->|ERROR| WaitBeforeRetryRound
@@ -28,4 +28,4 @@ graph TD
   NotifyUsersRound -->|ERROR| WaitBeforeRetryRound
 
   %%================= Error Loop =================##
-  WaitBeforeRetryRound -->|DONE| InitialState
+  WaitBeforeRetryRound -->|DONE| InitialStateRound
