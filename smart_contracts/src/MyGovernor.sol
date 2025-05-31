@@ -8,7 +8,6 @@ import {GovernorVotes} from "@openzeppelin/contracts/governance/extensions/Gover
 import {GovernorVotesQuorumFraction} from "@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFraction.sol";
 import {IVotes} from "@openzeppelin/contracts/governance/utils/IVotes.sol";
 import {TimelockController} from "@openzeppelin/contracts/governance/TimelockController.sol";
-import {Governor} from "../lib/openzeppelin-contracts/contracts/governance/Governor.sol";
 
 interface IGovernorRelay {
     function sendProposalDetails(bytes32 proposalId, uint256 startTime, uint256 endTime, bytes calldata options) external payable;

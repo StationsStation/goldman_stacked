@@ -28,7 +28,7 @@ contract GovernanceExecutor {
         limitOrderProtocol = _limitOrderProtocol;
     }
 
-    /// @notice Утверждение и исполнение лимитного ордера через голосование DAO
+    /// @notice Approves DAO limit order proposal for execution.
     function execute(
         address makerAsset,
         address takerAsset,
@@ -43,12 +43,12 @@ contract GovernanceExecutor {
         // Формируем order struct как bytes (ABI-encoded), без подписи
         bytes memory order = abi.encode(
             address(this), // maker
-            address(0),     // taker (anyone)
+            address(0),    // taker (anyone)
             makerAsset,
             takerAsset,
             makingAmount,
             takingAmount,
-            uint256(block.timestamp), // salt (можно заменить на nonce или голос id)
+            uint256(block.timestamp), // part of salt
             "", // makerAssetData
             "", // takerAssetData
             "", // getMakingAmount
@@ -59,20 +59,20 @@ contract GovernanceExecutor {
             nonce++
         );
 
-        // Хэшируем order как обычно делается в LimitOrderProtocol
+        // Hash order as in LimitOrderProtocol
         bytes32 orderHash = keccak256(order);
 
         // The same order must not be approved twice by the governance
         require(!approvedHashes[orderHash], "Order has been already approved");
 
-        // DAO голосованием одобряет хэш ордера
+        // DAO approves order hash
         approvedHashes[orderHash] = true;
 
         // emit order for off-chain
         emit OrderExecuted(orderHash);
     }
 
-    /// @notice ERC-1271 поддержка подписи ордера контрактом
+    /// @notice ERC-1271 support for signing the order by a contract.
     function isValidSignature(bytes32 hash, bytes memory) public view returns (bytes4) {
         if (approvedHashes[hash]) {
             return MAGICVALUE;
