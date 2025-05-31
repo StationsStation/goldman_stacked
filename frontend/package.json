@@ -46,6 +46,11 @@
 		"vitest": "^3.0.0"
 	},
 	"dependencies": {
-		"lucide-svelte": "^0.511.0"
+		"@byteatatime/wagmi-svelte": "^0.1.1",
+		"@wagmi/core": "^2.17.2",
+		"ethers": "^6.14.3",
+		"lucide-svelte": "^0.511.0",
+		"marked": "^15.0.12",
+		"viem": "^2.30.5"
 	}
 }
