@@ -6,13 +6,15 @@ services:
     ports:
       - "5000:5000"
 
+    environment:
+      - PONDER_API_URL=http://ponder:42069
+
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
     - "3000:3000"
-
       
   ponder:
     build:
@@ -22,3 +24,5 @@ services:
     - "42069:42069"
     volumes:
     - ./data/ponder:/app/.ponder
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
