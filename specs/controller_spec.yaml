@@ -184,6 +184,9 @@ components:
           description: Current state of the proposal in its lifecycle
         createdBy:
           type: string
+        transactionHash:
+          type: string
+          description: Hash of the transaction that created the proposal
         votes:
           type: array
           items:
