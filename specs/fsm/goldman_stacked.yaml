@@ -1,0 +1,43 @@
+alphabet_in:
+- ERROR
+- APPROVED_BY_DAO
+- COUNCIL_REJECTED
+- PENDING_PREAPPROVAL
+- REJECTED_BY_DAO
+- PERSONA_MISSING
+- COUNCIL_APPROVED
+- PERSONA_EXISTS
+- NO_PROPOSALS
+- DONE
+default_start_state: InitialStateRound
+final_states: []
+label: GoldmanStackedAbciApp
+start_states:
+- InitialStateRound
+states:
+- NotifyUsersRound
+- InitialStateRound
+- AICouncilNegotiationRound
+- WaitBeforeRetryRound
+- CheckProposalsRound
+- ExecuteWorkflowRound
+- ConstructPersonaRound
+transition_func:
+  (AICouncilNegotiationRound, COUNCIL_APPROVED): ExecuteWorkflowRound
+  (AICouncilNegotiationRound, COUNCIL_REJECTED): ExecuteWorkflowRound
+  (AICouncilNegotiationRound, ERROR): WaitBeforeRetryRound
+  (CheckProposalsRound, APPROVED_BY_DAO): ExecuteWorkflowRound
+  (CheckProposalsRound, ERROR): WaitBeforeRetryRound
+  (CheckProposalsRound, NO_PROPOSALS): WaitBeforeRetryRound
+  (CheckProposalsRound, PENDING_PREAPPROVAL): AICouncilNegotiationRound
+  (CheckProposalsRound, REJECTED_BY_DAO): ExecuteWorkflowRound
+  (ConstructPersonaRound, DONE): CheckProposalsRound
+  (ConstructPersonaRound, ERROR): WaitBeforeRetryRound
+  (ExecuteWorkflowRound, DONE): NotifyUsersRound
+  (ExecuteWorkflowRound, ERROR): WaitBeforeRetryRound
+  (InitialStateRound, ERROR): WaitBeforeRetryRound
+  (InitialStateRound, PERSONA_EXISTS): CheckProposalsRound
+  (InitialStateRound, PERSONA_MISSING): ConstructPersonaRound
+  (NotifyUsersRound, DONE): CheckProposalsRound
+  (NotifyUsersRound, ERROR): WaitBeforeRetryRound
+  (WaitBeforeRetryRound, DONE): InitialStateRound

@@ -1,0 +1,63 @@
+name: goldman_stacked_abci_app
+author: zarathustra
+version: 0.1.0
+type: skill
+description: Automates cross-chain proposal governance using an AI council and human
+  DAO via FSM-driven workflows.
+license: Apache-2.0
+aea_version: '>=1.0.0, <2.0.0'
+fingerprint:
+  README.md: bafybeie7knzgwomn2c5gophogokjd27c2kmoq6ys2srbfaztgbkhhi7kfe
+  __init__.py: bafybeibdd5zbrlbevwbwflhmoxwq4w53ghlxunrcih5btkqx4zspvlgx5y
+  behaviours.py: bafybeig5v7kxicvhqen7lddxntd6bc4e57bwg6lqwurkndqwlhy24u7bty
+  dialogues.py: bafybeigqjqzahwrwu3o4c5cd7lmylx7epdrkux34uvwvuimukk6y6rn2tu
+  handlers.py: bafybeibmnydkb7tumkwjutvyufwydc6xog5a4ci322mis2tevcy55m3mxq
+  strategy.py: bafybeidmp6rycobjt4vyc2xxipvl7vqjkskxgodlpdxtx3ooan52msi7sy
+  tests/__init__.py: bafybeigb2ji4vkcap3hokcedggjwsrah7te2nxjhkorwf3ibwgyaa2glma
+  tests/test_metrics.py: bafybeid4ja6t7s76oj7w333cpfusrndadoim5vxoe4u73kt7f35zpyfdde
+  tests/test_metrics_dialogues.py: bafybeibyaedzcspwxna7zw5d56amrbk4fd63f2qein22lg24kish23oqqq
+fingerprint_ignore_patterns: []
+connections:
+- zarathustra/openai_api:0.1.0:bafybeicgrjgthj6vva3spg4apy43ptubw47ycfk3phhpfncblf2qnz7qju
+- eightballer/telegram_wrapper:0.1.0:bafybeicnzu2fsjejj4loqcc2bbixgovrbdxpt3qnad6kjrptu7rghgh74e
+contracts: []
+protocols:
+- eightballer/default:0.1.0:bafybeicsdb3bue2xoopc6lue7njtyt22nehrnkevmkuk2i6ac65w722vwy
+- eightballer/http:0.1.0:bafybeid75xhq7hfdt7sgj7yrn44yj57xrgxscaw34ir46tndfzvodioxme
+- eightballer/chatroom:0.1.0:bafybeib36ua2o3lea5vkp6erhf23wb4egm6us5xj2z2xd7sq2tjarlzt4i
+- zarathustra/llm_chat_completion:1.0.0:bafybeifdp2rwfar5vbs33p56dlin76v62p5fdvspwnpasraunp2wa7gxo4
+skills: []
+behaviours:
+  main:
+    args: {}
+    class_name: GoldmanStackedABCIAppFsmBehaviour
+handlers:
+  metrics_handler:
+    args:
+      enable_cors: false
+    class_name: HttpHandler
+models:
+  default_dialogues:
+    args: {}
+    class_name: DefaultDialogues
+  http_dialogues:
+    args: {}
+    class_name: HttpDialogues
+  telegram_dialogues:
+    args: {}
+    class_name: TelegramDialogues
+  llm_chat_completion_dialogues:
+    args: {}
+    class_name: LlmChatCompletionDialogues
+  agent_persona:
+    args:
+      persona_name: scam bankman fraud
+    class_name: AgentPersona
+  goldman_stacked_strategy:
+    args:
+      data_dir: data
+      output_dir: ${str:../output}
+    class_name: GoldmanStackedStrategy
+dependencies: {}
+is_abstract: false
+customs: []
