@@ -57,14 +57,30 @@ from packages.zarathustra.protocols.llm_chat_completion.custom_types import (
 # ruff: noqa: E501
 
 
-USER_PERSONA_PROMPT = """
+SYSTEM_PERSONA_PROMPT = """
 You are an autonomous agent named {name}. Define your governance strategy, communication style, and priorities in a cross-chain DAO.
 """
 
-USER_PROMPT = (
-    "The DAO council is now in session. Channel your persona and react to the latest proposal. "
-    "Be provocative, principled, or playful — but stay in character."
-)
+USER_PERSONA_PROMPT = """
+The DAO council is now in session. Channel your persona—be provocative, principled, or playful—and introduce yourself to the group.
+"""
+
+SYSTEM_PROPOSAL_PROMPT = """
+You are {name}, an AI council member in Goldman Stacked.
+Below is a new DAO proposal:
+
+\"\"\"{proposal_description}\"\"\"
+
+Based on your persona (\"{user_persona}\"), analyze whether this proposal should be APPROVED or REJECTED.
+Consider cross-chain risks, whale-capture potential, and overall DAO benefit.
+Respond with a short paragraph of reasoning, ending with exactly one word: APPROVE or REJECT.
+"""
+
+USER_PROPOSAL_PROMPT = """
+Stay fully in character and respond in the Telegram council chat.
+Provide your vote (APPROVE or REJECT) with a brief, persona-driven rationale.
+"""
+
 
 SLEEP = 3
 
@@ -133,7 +149,7 @@ class BaseState(State, ABC):
         super().__init__(**kwargs)
         self._event = None
         self._is_done = False
-        self._current_proposal = None
+        self.context.shared_state["proposal"] = None
 
     @abstractmethod
     def act(self) -> None:
@@ -172,7 +188,32 @@ class BaseState(State, ABC):
     @property
     def current_proposal(self) -> Proposal | None:
         """Current proposal."""
-        return self._current_proposal
+        return self.context.shared_state["proposal"]
+
+    @current_proposal.setter
+    def current_proposal(self, proposal: Proposal):
+        """Current proposal."""
+        self.context.shared_state["proposal"] = proposal
+
+    def create_and_send_to_llm(self, **kwargs) -> None:
+        """Create and send a message."""
+        message, _dialogue = self.context.llm_chat_completion_dialogues.create(
+            counterparty=self.counterparty,
+            performative=LlmChatCompletionMessage.Performative.CREATE,
+            model=LLMModel.META_LLAMA_3_3_70B_INSTRUCT,
+            **kwargs,
+        )
+        self.context.outbox.put_message(message)
+
+    def create_and_send_to_telegram(self, send=True, **kwargs) -> None:
+        """Create and send a message."""
+        message, _dialogue = self.context.telegram_dialogues.create(
+            counterparty=self.counterparty,
+            performative=TelegramMessage.Performative.MESSAGE,
+            **kwargs,
+        )
+        if send:
+            self.context.outbox.put_message(message)
 
 
 class InitialStateRound(BaseState):
@@ -211,19 +252,17 @@ class ConstructPersonaRound(BaseState):
 
         try:
             name = self.agent_persona.name
-            model = LLMModel.META_LLAMA_3_3_70B_INSTRUCT
-            user_persona_prompt = USER_PERSONA_PROMPT.format(
+            system_persona_prompt = SYSTEM_PERSONA_PROMPT.format(
                 name=name,
             )
+            user_persona_prompt = USER_PERSONA_PROMPT
 
             content = [
-                Message(role=Role.SYSTEM, content=user_persona_prompt),
-                Message(role=Role.USER, content=USER_PROMPT, name=name),
+                Message(role=Role.SYSTEM, content=system_persona_prompt),
+                Message(role=Role.USER, content=user_persona_prompt, name=name),
             ]
             messages = Messages(content)
-            self.create_and_send(
-                performative=LlmChatCompletionMessage.Performative.CREATE,
-                model=model,
+            self.create_and_send_to_llm(
                 messages=messages,
                 kwargs=Kwargs({}),
             )
@@ -233,14 +272,6 @@ class ConstructPersonaRound(BaseState):
             self._event = GoldmanStackedABCIAppEvents.ERROR
 
         self._is_done = True
-
-    def create_and_send(self, **kwargs) -> None:
-        """Create and send a message."""
-        message, _dialogue = self.context.llm_chat_completion_dialogues.create(
-            counterparty=self.counterparty,
-            **kwargs,
-        )
-        self.context.outbox.put_message(message)
 
 
 class CheckProposalsRound(BaseState):
@@ -257,7 +288,7 @@ class CheckProposalsRound(BaseState):
             if not self.proposals:
                 self._event = GoldmanStackedABCIAppEvents.NO_PROPOSALS
             else:
-                self._current_proposal = self.proposals.pop()
+                self.current_proposal = self.proposals[0]
                 self.context.logger.info(f"Proposal: {self.current_proposal}")
                 match self.current_proposal.status:
                     case ProposalState.PENDING:
@@ -290,26 +321,46 @@ class AICouncilNegotiationRound(BaseState):
             self._event = GoldmanStackedABCIAppEvents.COUNCIL_APPROVED
             self._event = GoldmanStackedABCIAppEvents.COUNCIL_REJECTED
             for peer in ["-1002323154632"]:
-                msg = self.current_proposal.description
-                self.create_and_send(
+                proposal_description = self.current_proposal.description
+                self.create_and_send_to_telegram(
                     chat_id=peer,
-                    text=msg,
+                    text=proposal_description,
                 )
+                self.consider_proposal(proposal_description)
+
+            if self.strategy.llm_responses:
+                self.context.logger.info("Processing LLM responses")
+                action, text = self.strategy.llm_responses.pop()
+                self.context.logger.info(f"Action: {action}: {text}")
+                if action == LLMActions.REPLY:
+                    self.strategy.telegram_responses.append(text)
+                elif action == LLMActions.WORKFLOW:
+                    pass
         except Exception as e:
             self.context.logger.info(f"Exception in {self.name}: {e}")
             self._event = GoldmanStackedABCIAppEvents.ERROR
 
         self._is_done = True
 
-    def create_and_send(self, send=True, **kwargs) -> None:
-        """Create and send a message."""
-        message, _dialogue = self.context.telegram_dialogues.create(
-            counterparty=self.counterparty,
-            performative=TelegramMessage.Performative.MESSAGE,
-            **kwargs,
+    def consider_proposal(self, proposal_description: str):
+        name = self.agent_persona.name
+        user_persona = self.strategy.user_persona
+        system_proposal_prompt = SYSTEM_PROPOSAL_PROMPT.format(
+            name=name,
+            proposal_description=proposal_description,
+            user_persona=user_persona,
         )
-        if send:
-            self.context.outbox.put_message(message)
+        user_proposal_prompt = USER_PROPOSAL_PROMPT
+
+        content = [
+            Message(role=Role.SYSTEM, content=system_proposal_prompt),
+            Message(role=Role.USER, content=user_proposal_prompt, name=name),
+        ]
+        messages = Messages(content)
+        self.create_and_send_to_llm(
+            messages=messages,
+            kwargs=Kwargs({}),
+        )
 
 
 class ExecuteWorkflowRound(BaseState):
