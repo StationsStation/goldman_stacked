@@ -342,7 +342,7 @@ class CheckProposalsRound(BaseState):
             if not self.proposals:
                 self._event = GoldmanStackedABCIAppEvents.NO_PROPOSALS
             else:
-                self.current_proposal = self.proposals[0]
+                self.current_proposal = self.proposals.pop(0)
                 self.context.logger.info(f"Proposal: {self.current_proposal}")
                 match self.current_proposal.status:
                     case ProposalState.PENDING:
@@ -367,29 +367,40 @@ class AICouncilNegotiationRound(BaseState):
         super().__init__(**kwargs)
         self._state = GoldmanStackedabciappStates.AICOUNCILNEGOTIATIONROUND
 
+
     def act(self) -> None:
         """Perfom the act."""
 
         try:
             self._event = GoldmanStackedABCIAppEvents.COUNCIL_APPROVED
             self._event = GoldmanStackedABCIAppEvents.COUNCIL_REJECTED
-            for peer in ["-1002323154632"]:
-                proposal_description = self.current_proposal.description
-                self.create_and_send_to_telegram(
-                    chat_id=peer,
-                    text=proposal_description,
-                )
-                self.consider_proposal(proposal_description)
+            peer = "-1002323154632"  # Replace with actual chat ID or peer ID
 
             if self.strategy.llm_responses:
                 self.context.logger.info("Processing LLM responses")
                 action, text = self.strategy.llm_responses.pop()
                 self.context.logger.info(f"Action: {action}: {text}")
                 if action == LLMActions.REPLY:
-                    self.strategy.telegram_responses.append(text)
+                    name = self.context.agent_persona.persona_name
+                    self.create_and_send_to_telegram(
+                        chat_id=peer,
+                        text=f"{name} says: {text}",
+                    )
                 elif action == LLMActions.WORKFLOW:
                     pass
             self.process_telegram_messages()
+            if self.current_proposal is None:
+                self.context.logger.info("No current proposal to consider.")
+                self._event = GoldmanStackedABCIAppEvents.NO_PROPOSALS
+                return 
+
+            proposal_description = self.current_proposal.description
+            self.create_and_send_to_telegram(
+                chat_id=peer,
+                text=proposal_description,
+            )
+            self.consider_proposal(proposal_description)
+            self.current_proposal = None
         except Exception as e:
             self.context.logger.info(f"Exception in {self.name}: {e}")
             self._event = GoldmanStackedABCIAppEvents.ERROR

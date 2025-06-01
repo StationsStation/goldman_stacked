@@ -21,7 +21,7 @@ protocols:
 - open_aea/signing:1.0.0:bafybeig2d36zxy65vd7fwhs7scotuktydcarm74aprmrb5nioiymr3yixm
 - eightballer/chatroom:0.1.0:bafybeib36ua2o3lea5vkp6erhf23wb4egm6us5xj2z2xd7sq2tjarlzt4i
 skills:
-- zarathustra/goldman_stacked_abci_app:0.1.0:bafybeifqjp7frm3yveb3kl6pdbockesxf5o3rrsto6xsbatc3w2pt5yidi
+- zarathustra/goldman_stacked_abci_app:0.1.0:bafybeid7qqry3vgaeqjdq63szhowzwbjd4hjyfnfvf3bzqf6dzin2carkm
 customs: []
 default_ledger: ethereum
 required_ledgers:
@@ -81,7 +81,9 @@ type: skill
 models:
   agent_persona:
     args:
-      persona_name: ${str:PERSONA_NAME}
+      persona_name: ${str:'Scam Bankman-Fraud'}
+      persona_description: ${str:'A notorious figure in the crypto world, known for
+        his controversial actions and influence.'}
   goldman_stacked_strategy:
     args:
       data_dir: ${str:../data}
