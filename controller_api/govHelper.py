@@ -1,10 +1,11 @@
 """Module to get data from governance contract and subgraph."""
 
+import os
+
 import requests
 from web3 import Web3
 from dotenv import load_dotenv
-import json
-import os
+
 
 load_dotenv()
 
@@ -12,7 +13,7 @@ RPC = "https://base.drpc.org"
 with open("abi.json", encoding="utf-8") as file:
     ABI = file.read()
 
-ADDRESS = "0xE5Da5F4d8644A271226161a859c1177C5214c54e"
+ADDRESS = os.environ.get("GOVERNOR_CONTRACT_ADDRESS", "0xE5Da5F4d8644A271226161a859c1177C5214c54e")
 
 
 BASE_URL = os.environ.get("PONDER_API_URL", "http://localhost:42069")
@@ -46,9 +47,9 @@ def get_proposals() -> list[dict]:
         try:
             status = governor_contract.functions.state(int(proposal["proposalId"])).call()
             proposal["status"] = status
-        except Exception as e:
+        except Exception as e:  # noqa
             error_message = str(e.args[0])  # Get the error message
-            if 'Proposal voting has ended, but was not finalized yet' in error_message:
+            if "Proposal voting has ended, but was not finalized yet" in error_message:
                 proposal["status"] = "Ended"
             else:
                 proposal["status"] = "unknown"
