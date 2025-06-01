@@ -179,6 +179,8 @@ components:
             - Queued
             - Expired
             - Executed
+            - Ended
+            - unknown
           description: Current state of the proposal in its lifecycle
         createdBy:
           type: string
