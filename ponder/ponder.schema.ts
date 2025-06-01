@@ -5,7 +5,6 @@ export const proposal = onchainTable("proposal", (t) => ({
   description: t.text(),
   status: t.text(),
   createdBy: t.text(),
-  createdAt: t.text(),
 }));
 
 export const vote = onchainTable("vote", (t) => ({

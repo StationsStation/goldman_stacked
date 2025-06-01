@@ -67,6 +67,7 @@ frontend/!.env.example
 frontend/vite.config.js.timestamp-*
 frontend/vite.config.ts.timestamp-*
 
+./data
 
 packages/open_aea/
 packages/eightballer/
