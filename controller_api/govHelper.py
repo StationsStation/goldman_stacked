@@ -47,9 +47,9 @@ def get_proposals() -> list[dict]:
         try:
             status = governor_contract.functions.state(int(proposal["proposalId"])).call()
             proposal["status"] = status
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             error_message = str(e.args[0])  # Get the error message
-            if 'Proposal voting has ended, but was not finalized yet' in error_message:
+            if "Proposal voting has ended, but was not finalized yet" in error_message:
                 proposal["status"] = "Ended"
             else:
                 proposal["status"] = "unknown"
