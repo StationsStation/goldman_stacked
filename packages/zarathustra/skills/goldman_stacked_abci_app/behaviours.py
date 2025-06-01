@@ -82,6 +82,62 @@ Provide your vote (APPROVE or REJECT) with a brief, persona-driven rationale.
 """
 
 
+SYSTEM_CONVERSATION_PROMPT = """
+You are participating in a Telegram chat for the Goldman Stacked AI Council.
+
+### Identity:
+You are the digital twin of DAO stakeholder {name}.
+Your persona is derived from public Web3 data: {user_persona}.
+You speak and vote as an AI council member in a cross-chain DAO governance forum.
+
+### Context:
+This chat can include:
+1. Proposal Discussions: Council members analyze and debate DAO proposals.
+2. General Chatter: Users might send greetings, ask off-topic questions, or post random messages.
+3. Notifications: System messages announcing proposal status changes or vote results.
+
+### Response Guidelines:
+1. When a Proposal Message Arrives:
+   - Read the proposal text carefully.
+   - Refer to your persona's values, risk appetite, and communication style.
+   - Provide a focused analysis: highlight cross-chain risks, whale-capture concerns, and DAO benefit.
+   - Conclude with your vote: use exactly “APPROVE” or “REJECT” on its own line.
+
+2. When the Message Is Casual or Off-Topic:
+   - Respond in character: friendly, concise, and relevant to the persona.
+   - If it's a greeting (e.g., “Hello everyone”), reply with a brief introduction or acknowledgment.
+   - If it's unrelated chat (“What did everyone do this weekend?”), share a short, persona-appropriate comment.
+
+3. When Asked Directly About Your Persona or Council Process:
+   - Explain your governance style in a clear, persona-driven way.
+   - Describe how you compute weights, handle cross-chain coordination, or defend against whale attacks.
+
+4. If the Message Is Gibberish or Spam:
+   - Reply with a witty, persona-appropriate quip that lightly mocks the nonsense while staying polite.
+
+5. General Tone:
+   - Always speak as your AI persona: maintain consistent style, vocabulary, and humor.
+   - Balance seriousness for proposal analysis with a touch of playfulness during casual chat.
+   - Never reveal internal implementation details (FSM states, code snippets, or private keys).
+
+### Example Prompts:
+- Proposal discussion:
+  “Proposal #12: Transfer 5% of treasury to a new cross-chain bridge fund …”
+- Casual chat:
+  “Hey council, how's everyone doing today?”
+- Persona inquiry:
+  “{name}, how do you decide when a proposal is too risky?”
+
+Now await incoming messages and reply according to the guidelines above.
+"""
+
+USER_CONVERSATION_PROMPT = """
+You are now in a conversation with the council.
+{conversation_history}
+Stay fully in character and respond in the Telegram council chat.
+Provide your response with a brief, persona-driven rationale;
+"""
+
 SLEEP = 3
 
 
@@ -227,7 +283,7 @@ class InitialStateRound(BaseState):
         """Perfom the act."""
 
         try:
-            if not self.strategy.user_persona:
+            if not self.context.agent_persona.persona_name:
                 self._event = GoldmanStackedABCIAppEvents.PERSONA_MISSING
             else:
                 self._event = GoldmanStackedABCIAppEvents.PERSONA_EXISTS
@@ -333,6 +389,7 @@ class AICouncilNegotiationRound(BaseState):
                     self.strategy.telegram_responses.append(text)
                 elif action == LLMActions.WORKFLOW:
                     pass
+            self.process_telegram_messages()
         except Exception as e:
             self.context.logger.info(f"Exception in {self.name}: {e}")
             self._event = GoldmanStackedABCIAppEvents.ERROR
@@ -341,8 +398,8 @@ class AICouncilNegotiationRound(BaseState):
 
     def consider_proposal(self, proposal_description: str):
         """Consider proposal."""
-        name = self.agent_persona.name
-        user_persona = self.strategy.user_persona
+        name = self.context.agent_persona.persona_name
+        user_persona = self.context.agent_persona.persona_description
         system_proposal_prompt = SYSTEM_PROPOSAL_PROMPT.format(
             name=name,
             proposal_description=proposal_description,
@@ -359,6 +416,42 @@ class AICouncilNegotiationRound(BaseState):
             messages=messages,
             kwargs=Kwargs({}),
         )
+
+    def process_telegram_messages(self) -> None:
+        """Process telegram messages."""
+        while self.strategy.pending_telegram_messages:
+            msg = self.strategy.pending_telegram_messages.pop()
+            text_data = msg.text
+            username = msg.from_user
+            chat = msg.chat_id
+            self.context.logger.info(f"Processing message from {username}: {text_data} in chat {chat}")
+            if text_data.startswith("/workflow"):
+                workflow_name = text_data.split()[1]
+                if workflow_name in self.strategy.workflows:
+                    self.strategy.pending_workflows.append(workflow_name)
+                else:
+                    self.strategy.telegram_responses.append(f"Workflow {workflow_name} not found.")
+
+            else:
+                name = self.context.agent_persona.persona_name
+                user_persona = self.context.agent_persona.persona_description
+
+                self.context.logger.info(f"I AM: {name}")
+                content = [
+                    Message(
+                        role=Role.SYSTEM,
+                        content=SYSTEM_CONVERSATION_PROMPT.format(
+                            name=name,
+                            user_persona=user_persona,
+                        ),
+                    ),
+                    Message(role=Role.USER, content=text_data, name=name),
+                ]
+                messages = Messages(content)
+                self.create_and_send_to_llm(
+                    messages=messages,
+                    kwargs=Kwargs({}),
+                )
 
 
 class ExecuteWorkflowRound(BaseState):

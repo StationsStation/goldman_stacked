@@ -24,7 +24,6 @@ class LLMActions(Enum):
 class GoldmanStackedStrategy(Model):
     """This class models the AdvancedDataRequest skill."""
 
-    user_persona: str
     data_dir: str
     new_users: deque[dict] = deque(maxlen=MAX_QUEUE_LENGTH)
     pending_telegram_messages: deque[ChatroomMessage] = deque(maxlen=MAX_QUEUE_LENGTH)
@@ -42,7 +41,6 @@ class GoldmanStackedStrategy(Model):
         """Initialize dialogues."""
         self.data_dir = Path(kwargs.pop("data_dir", "data"))
         self.output_dir = Path(kwargs.pop("output_dir", "output"))
-        self.user_persona = ""
         Model.__init__(self, **kwargs)
 
 
@@ -50,6 +48,7 @@ class AgentPersona(Model):
     """AgentPersona."""
 
     persona_name: str
+    persona_description: str
 
     def __init__(self, **kwargs: Any) -> None:
         """Initialize agent persona."""
