@@ -9,10 +9,10 @@ aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
   README.md: bafybeie7knzgwomn2c5gophogokjd27c2kmoq6ys2srbfaztgbkhhi7kfe
   __init__.py: bafybeibdd5zbrlbevwbwflhmoxwq4w53ghlxunrcih5btkqx4zspvlgx5y
-  behaviours.py: bafybeif5rwgm6dqwvpzg5bbdoihxhzdvuzvndsg3ht4afqmkaywtqnypfq
+  behaviours.py: bafybeibf2yfflpzlnt65scmn2rekrcyuvgfx7uprmdhg2uw4iwohr52ipy
   dialogues.py: bafybeihumikopwajayxsmbyz4dqhzzchief6qkgcjfjtdtni62wazii6ea
-  handlers.py: bafybeibmnydkb7tumkwjutvyufwydc6xog5a4ci322mis2tevcy55m3mxq
-  strategy.py: bafybeidmp6rycobjt4vyc2xxipvl7vqjkskxgodlpdxtx3ooan52msi7sy
+  handlers.py: bafybeifaguap7a3apl7ufqe3lvlgbj47f67ymm5avywfasp67su2ske6ym
+  strategy.py: bafybeifctytortad34aeglayu4flqck74fte6nzhnv2n6pmghtko46y5z4
   tests/__init__.py: bafybeigb2ji4vkcap3hokcedggjwsrah7te2nxjhkorwf3ibwgyaa2glma
   tests/test_metrics.py: bafybeid4ja6t7s76oj7w333cpfusrndadoim5vxoe4u73kt7f35zpyfdde
   tests/test_metrics_dialogues.py: bafybeibyaedzcspwxna7zw5d56amrbk4fd63f2qein22lg24kish23oqqq
@@ -36,6 +36,12 @@ handlers:
     args:
       enable_cors: false
     class_name: HttpHandler
+  telegram_handler:
+    args: {}
+    class_name: TelegramHandler
+  llm_chat_completion_handler:
+    args: {}
+    class_name: LlmChatCompletionHandler
 models:
   default_dialogues:
     args: {}
@@ -52,6 +58,12 @@ models:
   agent_persona:
     args:
       persona_name: scam bankman fraud
+      persona_description: 'A self-proclaimed "genius" who is actually a fraudster,
+        known for his
+
+        unethical practices and manipulation of the financial system.
+
+        '
     class_name: AgentPersona
   goldman_stacked_strategy:
     args:
