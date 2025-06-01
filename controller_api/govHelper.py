@@ -13,7 +13,7 @@ RPC = "https://base.drpc.org"
 with open("abi.json", encoding="utf-8") as file:
     ABI = file.read()
 
-ADDRESS = "0xE5Da5F4d8644A271226161a859c1177C5214c54e"
+ADDRESS = os.environ.get("GOVERNOR_CONTRACT_ADDRESS", "0xE5Da5F4d8644A271226161a859c1177C5214c54e")
 
 
 BASE_URL = os.environ.get("PONDER_API_URL", "http://localhost:42069")
