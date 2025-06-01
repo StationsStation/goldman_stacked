@@ -23,3 +23,6 @@ services:
       dockerfile: Dockerfile
     ports:
     - "42069:42069"
+
+    volumes:
+    - ./data/ponder:/app/.ponder
