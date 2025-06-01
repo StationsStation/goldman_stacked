@@ -32,6 +32,7 @@ connexion = "<3"
 flask-cors = "^6.0.0"
 pydantic = "^2.11.5"
 openai = "1.64.0"
+rich = "^13.9.4"
 python-telegram-bot = "<=21"
 
 [tool.poetry.group.dev.dependencies]
