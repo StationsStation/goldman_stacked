@@ -1,7 +1,4 @@
-# docker compose to build the micro services
-
 version: "3.8"
-
 services:
   api:
     build:
@@ -23,6 +20,5 @@ services:
       dockerfile: Dockerfile
     ports:
     - "42069:42069"
-
     volumes:
     - ./data/ponder:/app/.ponder
