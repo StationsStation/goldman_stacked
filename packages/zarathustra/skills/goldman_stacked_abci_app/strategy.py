@@ -36,7 +36,7 @@ class GoldmanStackedStrategy(Model):
     output_dir: Path
     from_config: bool = False
 
-    workflows = {}  # TODO
+    workflows = {}
 
     def __init__(self, **kwargs: Any) -> None:
         """Initialize dialogues."""

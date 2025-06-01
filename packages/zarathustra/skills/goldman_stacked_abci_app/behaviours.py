@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # ------------------------------------------------------------------------------
 #
 #   Copyright 2025 zarathustra
@@ -21,23 +20,15 @@
 
 import os
 import time
-from enum import Enum
-from pydantic import BaseModel
 from abc import ABC, abstractmethod
-from typing import Optional, Any, cast
-from aea.skills.behaviours import FSMBehaviour, State
 from enum import Enum
+from typing import Any, cast
+
+from pydantic import BaseModel
+from aea.skills.behaviours import State, FSMBehaviour
 
 from packages.eightballer.protocols.chatroom.message import (
     ChatroomMessage as TelegramMessage,
-)
-from packages.zarathustra.skills.goldman_stacked_abci_app.strategy import (
-    LLMActions,
-    AgentPersona,
-    GoldmanStackedStrategy,
-)
-from packages.eightballer.connections.telegram_wrapper.connection import (
-    CONNECTION_ID as TELEGRAM_CONNECTION_ID,
 )
 from packages.zarathustra.connections.openai_api.connection import (
     CONNECTION_ID as OPENAI_API_CONNECTION_ID,
@@ -46,12 +37,24 @@ from packages.zarathustra.connections.openai_api.connection import (
 from packages.zarathustra.protocols.llm_chat_completion.message import (
     LlmChatCompletionMessage,
 )
+from packages.eightballer.connections.telegram_wrapper.connection import (
+    CONNECTION_ID as TELEGRAM_CONNECTION_ID,
+)
+from packages.zarathustra.skills.goldman_stacked_abci_app.strategy import (
+    LLMActions,
+    AgentPersona,
+    GoldmanStackedStrategy,
+)
 from packages.zarathustra.protocols.llm_chat_completion.custom_types import (
     Role,
     Kwargs,
     Message,
     Messages,
 )
+
+
+# ruff: noqa: BLE001
+# ruff: noqa: E501
 
 
 USER_PERSONA_PROMPT = """
@@ -67,12 +70,16 @@ SLEEP = 3
 
 
 class ProposalState(Enum):
+    """ProposalState."""
+
     PENDING = "PENDING"
     APPROVED = "APPROVED"
     REJECTED = "REJECTED"
 
 
 class Proposal(BaseModel):
+    """Proposal."""
+
     status: ProposalState = ProposalState.PENDING
     description: str
 
@@ -138,8 +145,8 @@ class BaseState(State, ABC):
         return self._is_done
 
     @property
-    def event(self) -> Optional[str]:
-        """Current event"""
+    def event(self) -> str | None:
+        """Current event."""
         return self._event
 
     @property
@@ -159,10 +166,12 @@ class BaseState(State, ABC):
 
     @property
     def proposals(self):
+        """Proposals."""
         return PROPOSALS
 
     @property
     def current_proposal(self) -> Proposal | None:
+        """Current proposal."""
         return self._current_proposal
 
 

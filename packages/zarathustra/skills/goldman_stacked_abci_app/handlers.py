@@ -19,23 +19,14 @@
 """This module contains the handler for the 'metrics' skill."""
 
 import json
-from typing import cast
 import itertools
+from typing import cast
 
 from aea.skills.base import Handler
 from aea.protocols.base import Message
 
 from packages.eightballer.protocols.default import DefaultMessage
 from packages.eightballer.protocols.http.message import HttpMessage
-from packages.zarathustra.skills.goldman_stacked_abci_app.strategy import (
-    LLMActions,
-    GoldmanStackedStrategy,
-)
-from packages.zarathustra.skills.goldman_stacked_abci_app.dialogues import (
-    HttpDialogue,
-    HttpDialogues,
-    DefaultDialogues,
-)
 from packages.eightballer.protocols.chatroom.message import (
     ChatroomMessage as TelegramMessage,
 )
@@ -50,6 +41,15 @@ from packages.zarathustra.protocols.llm_chat_completion.message import (
 from packages.zarathustra.protocols.llm_chat_completion.dialogues import (
     LlmChatCompletionDialogue,
     LlmChatCompletionDialogues,
+)
+from packages.zarathustra.skills.goldman_stacked_abci_app.strategy import (
+    LLMActions,
+    GoldmanStackedStrategy,
+)
+from packages.zarathustra.skills.goldman_stacked_abci_app.dialogues import (
+    HttpDialogue,
+    HttpDialogues,
+    DefaultDialogues,
 )
 
 
@@ -74,18 +74,12 @@ class TelegramHandler(Handler):
             return
 
         telegram_dialogues = cast(TelegramDialogues, self.context.telegram_dialogues)
-        telegram_dialogue = cast(
-            TelegramDialogue, telegram_dialogues.update(telegram_msg)
-        )
+        telegram_dialogue = cast(TelegramDialogue, telegram_dialogues.update(telegram_msg))
 
         if not telegram_dialogue:
-            self.context.logger.debug(
-                f"received invalid telegram message={telegram_msg}, unidentified dialogue."
-            )
+            self.context.logger.debug(f"received invalid telegram message={telegram_msg}, unidentified dialogue.")
 
-        self.context.logger.info(
-            f"received telegram message={telegram_msg.from_user}, content={telegram_msg.text}"
-        )
+        self.context.logger.info(f"received telegram message={telegram_msg.from_user}, content={telegram_msg.text}")
         self.strategy.pending_telegram_messages.append(telegram_msg)
         self.strategy.chat_history.append(telegram_msg.text)
 
@@ -106,28 +100,18 @@ class LlmChatCompletionHandler(Handler):
 
     SUPPORTED_PROTOCOL = LlmChatCompletionMessage.protocol_id
 
-    def handle(self, message: Message) -> None:  # noqa: PLR0914
+    def handle(self, message: Message) -> None:
         """Implement the reaction to an envelope."""
 
         llm_chat_completion_msg = cast(LlmChatCompletionMessage, message)
-        if (
-            llm_chat_completion_msg.performative
-            == LlmChatCompletionMessage.Performative.ERROR
-        ):
+        if llm_chat_completion_msg.performative == LlmChatCompletionMessage.Performative.ERROR:
             self.context.logger.error(f"Received error={llm_chat_completion_msg}")
             return
 
-        if (
-            llm_chat_completion_msg.performative
-            == LlmChatCompletionMessage.Performative.RESPONSE
-        ):
-            self.context.logger.debug(
-                f"received LLM chat completion message={llm_chat_completion_msg}"
-            )
+        if llm_chat_completion_msg.performative == LlmChatCompletionMessage.Performative.RESPONSE:
+            self.context.logger.debug(f"received LLM chat completion message={llm_chat_completion_msg}")
 
-        llm_chat_completion_dialogues = cast(
-            LlmChatCompletionDialogues, self.context.llm_chat_completion_dialogues
-        )
+        llm_chat_completion_dialogues = cast(LlmChatCompletionDialogues, self.context.llm_chat_completion_dialogues)
         llm_chat_completion_dialogue = cast(
             LlmChatCompletionDialogue,
             llm_chat_completion_dialogues.update(llm_chat_completion_msg),
@@ -186,9 +170,7 @@ class HttpHandler(Handler):
 
     def _handle_unidentified_dialogue(self, http_msg: HttpMessage) -> None:
         """Handle an unidentified dialogue."""
-        self.context.logger.info(
-            f"received invalid http message={http_msg}, unidentified dialogue."
-        )
+        self.context.logger.info(f"received invalid http message={http_msg}, unidentified dialogue.")
         default_dialogues = cast(DefaultDialogues, self.context.default_dialogues)
         default_msg, _ = default_dialogues.create(
             counterparty=http_msg.sender,
@@ -199,9 +181,7 @@ class HttpHandler(Handler):
         )
         self.context.outbox.put_message(message=default_msg)
 
-    def _handle_request(
-        self, http_msg: HttpMessage, http_dialogue: HttpDialogue
-    ) -> None:
+    def _handle_request(self, http_msg: HttpMessage, http_dialogue: HttpDialogue) -> None:
         """Handle a Http request."""
         self.context.logger.info(
             f"received http request with method={http_msg.method}, url={http_msg.url} and body={http_msg.body}"
@@ -247,9 +227,7 @@ class HttpHandler(Handler):
         self.context.logger.info(f"responding with: {http_response}")
         self.context.outbox.put_message(message=http_response)
 
-    def _handle_invalid(
-        self, http_msg: HttpMessage, http_dialogue: HttpDialogue
-    ) -> None:
+    def _handle_invalid(self, http_msg: HttpMessage, http_dialogue: HttpDialogue) -> None:
         """Handle an invalid http message."""
         self.context.logger.warning(
             f"""

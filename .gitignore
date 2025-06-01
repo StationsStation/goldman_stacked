@@ -70,3 +70,5 @@ frontend/vite.config.ts.timestamp-*
 
 packages/open_aea/
 packages/eightballer/
+packages/zarathustra/protocols/
+packages/zarathustra/connections/

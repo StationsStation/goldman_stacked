@@ -1,9 +1,10 @@
 """Module to get data from governance contract and subgraph."""
 
+
 import requests
 from web3 import Web3
 from dotenv import load_dotenv
-import json
+
 
 load_dotenv()
 
