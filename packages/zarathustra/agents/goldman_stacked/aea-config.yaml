@@ -12,7 +12,7 @@ fingerprint_ignore_patterns: []
 connections:
 - eightballer/http_client:0.1.0:bafybeiaz5auftwxpt4czrmeeesggqlkc2kosmetq6adrebeu6g7bkhqc2u
 - eightballer/http_server:0.1.0:bafybeidrvllrr23mc6bvjxn6v3hny6oiwhfgi72n2b7w6ck5luousjfbbq
-- eightballer/telegram_wrapper:0.1.0:bafybeigl6wknndxuwc647c4tjllqwi363fqbijfca7pdl2cq2u4lxinsna
+- eightballer/telegram_wrapper:0.1.0:bafybeicnzu2fsjejj4loqcc2bbixgovrbdxpt3qnad6kjrptu7rghgh74e
 - zarathustra/openai_api:0.1.0:bafybeicgrjgthj6vva3spg4apy43ptubw47ycfk3phhpfncblf2qnz7qju
 contracts: []
 protocols:
@@ -21,7 +21,7 @@ protocols:
 - open_aea/signing:1.0.0:bafybeig2d36zxy65vd7fwhs7scotuktydcarm74aprmrb5nioiymr3yixm
 - eightballer/chatroom:0.1.0:bafybeib36ua2o3lea5vkp6erhf23wb4egm6us5xj2z2xd7sq2tjarlzt4i
 skills:
-- zarathustra/goldman_stacked_abci_app:0.1.0:bafybeibkpngvd2ki74qbdycguiiaalenqhtvzh4hxoakchylddngedwsl4
+- zarathustra/goldman_stacked_abci_app:0.1.0:bafybeiftcqjsb3zhboni5shrjv3blpyvsdp4gcbf62zw5qdciorh2be2ky
 customs: []
 default_ledger: ethereum
 required_ledgers:
