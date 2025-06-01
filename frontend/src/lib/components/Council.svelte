@@ -92,8 +92,12 @@
 </style>
 
 <div class="w-full space-y-6">
+  
   <!-- Carousel -->
-  <div class="card p-4 grid grid-cols-[auto_1fr_auto] gap-4 items-center bg-grey">
+  <div class="card">
+    
+    <h2 class="p-4 text-center text-2xl font-mono text-green-400 tracking-wide uppercase mb-4">The Advisory Board</h2>
+    <div class="p-4 grid grid-cols-[auto_1fr_auto] gap-4 items-center bg-grey">
     <!-- Button: Left -->
     <button bind:this={elemCarouselLeft} type="button" class="btn-icon preset-filled" on:click={carouselLeft}>
       <ArrowLeft size={16} />
@@ -147,5 +151,6 @@
         />
       </button>
     {/each}
+  </div>
   </div>
 </div>

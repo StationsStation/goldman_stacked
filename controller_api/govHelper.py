@@ -35,6 +35,7 @@ def get_proposals() -> list[dict]:
                 description
                 status
                 createdBy
+                transactionHash
             }
         }
     }

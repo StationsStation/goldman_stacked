@@ -8,7 +8,8 @@ ponder.on("MyGovernor:ProposalCreated", async ({ event, context }) => {
             proposalId: String(event.args.proposalId),
             description: event.args.description,
             status: "Pending",
-            createdBy: event.args.proposer
+            createdBy: event.args.proposer,
+            transactionHash: event.transaction.hash
         })    
 });
 

@@ -10,6 +10,10 @@ export type Proposal = {
      */
     status: Proposal.status;
     createdBy: string;
+    /**
+     * Hash of the transaction that created the proposal
+     */
+    transactionHash?: string;
     votes?: Array<{
         voterAddress?: string;
         weight?: string;
