@@ -34,7 +34,6 @@ def get_proposals() -> list[dict]:
                 description
                 status
                 createdBy
-                createdAt
             }
         }
     }
@@ -44,8 +43,15 @@ def get_proposals() -> list[dict]:
 
     proposals = response.json()["data"]["proposals"]["items"]
     for proposal in proposals:
-        status = governor_contract.functions.state(int(proposal["proposalId"])).call()
-        proposal["status"] = status
+        try:
+            status = governor_contract.functions.state(int(proposal["proposalId"])).call()
+            proposal["status"] = status
+        except Exception as e:
+            error_message = str(e.args[0])  # Get the error message
+            if 'Proposal voting has ended, but was not finalized yet' in error_message:
+                proposal["status"] = "Ended"
+            else:
+                proposal["status"] = "unknown"
         votes = get_votes(proposal["proposalId"])
         proposal["votes"] = votes
 
