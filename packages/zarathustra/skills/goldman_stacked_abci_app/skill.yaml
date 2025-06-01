@@ -9,12 +9,12 @@ aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
   README.md: bafybeie7knzgwomn2c5gophogokjd27c2kmoq6ys2srbfaztgbkhhi7kfe
   __init__.py: bafybeibdd5zbrlbevwbwflhmoxwq4w53ghlxunrcih5btkqx4zspvlgx5y
-  behaviours.py: bafybeid7idovp6sowwhzg2ts6xkfvbz4dr6kpdf5jwm5k5okusvd6px2f4
+  behaviours.py: bafybeieeu5lw23yutywjerwvyy3gg2fszpdt5v47vwsdogt5pzgrkkom4y
   dialogues.py: bafybeihumikopwajayxsmbyz4dqhzzchief6qkgcjfjtdtni62wazii6ea
   handlers.py: bafybeifaguap7a3apl7ufqe3lvlgbj47f67ymm5avywfasp67su2ske6ym
   strategy.py: bafybeifctytortad34aeglayu4flqck74fte6nzhnv2n6pmghtko46y5z4
   tests/__init__.py: bafybeigb2ji4vkcap3hokcedggjwsrah7te2nxjhkorwf3ibwgyaa2glma
-  tests/test_metrics.py: bafybeid4ja6t7s76oj7w333cpfusrndadoim5vxoe4u73kt7f35zpyfdde
+  tests/test_metrics.py: bafybeieduuw72fbkhsfbqjesmzuddq5vkr5ln5hiw2qp5vrcl6377fnzx4
   tests/test_metrics_dialogues.py: bafybeibyaedzcspwxna7zw5d56amrbk4fd63f2qein22lg24kish23oqqq
 fingerprint_ignore_patterns: []
 connections:
@@ -59,11 +59,7 @@ models:
     args:
       persona_name: scam bankman fraud
       persona_description: 'A self-proclaimed "genius" who is actually a fraudster,
-        known for his
-
-        unethical practices and manipulation of the financial system.
-
-        '
+        known for his unethical practices and manipulation of the financial system. '
     class_name: AgentPersona
   goldman_stacked_strategy:
     args:
