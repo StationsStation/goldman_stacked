@@ -125,8 +125,6 @@ class LlmChatCompletionHandler(Handler):
         llm_chat_completion = reconstitute(message)
         self.context.logger.debug(f"Reconstituted: {llm_chat_completion}")
         text = llm_chat_completion.choices[0].message.content
-        if not self.strategy.user_persona:
-            self.strategy.user_persona = text
 
         self.context.goldman_stacked_strategy.chat_history.append(text)
         self.strategy.llm_responses.append((LLMActions.REPLY, text))

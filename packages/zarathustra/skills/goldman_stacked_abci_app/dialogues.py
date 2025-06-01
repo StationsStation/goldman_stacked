@@ -32,6 +32,10 @@ from packages.eightballer.protocols.default.dialogues import (
     DefaultDialogue as BaseDefaultDialogue,
     DefaultDialogues as BaseDefaultDialogues,
 )
+from packages.zarathustra.protocols.llm_chat_completion.dialogues import (
+    LlmChatCompletionDialogue as BaseLlmChatCompletionDialogue,
+    LlmChatCompletionDialogues as BaseLlmChatCompletionDialogues,
+)
 
 
 DefaultDialogue = BaseDefaultDialogue
@@ -40,3 +44,7 @@ DefaultDialogues = BaseDefaultDialogues
 
 HttpDialogue = BaseHttpDialogue
 HttpDialogues = BaseHttpDialogues
+
+
+LlmChatCompletionDialogue = BaseLlmChatCompletionDialogue
+LlmChatCompletionDialogues = BaseLlmChatCompletionDialogues

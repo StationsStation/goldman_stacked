@@ -57,14 +57,86 @@ from packages.zarathustra.protocols.llm_chat_completion.custom_types import (
 # ruff: noqa: E501
 
 
-USER_PERSONA_PROMPT = """
+SYSTEM_PERSONA_PROMPT = """
 You are an autonomous agent named {name}. Define your governance strategy, communication style, and priorities in a cross-chain DAO.
 """
 
-USER_PROMPT = (
-    "The DAO council is now in session. Channel your persona and react to the latest proposal. "
-    "Be provocative, principled, or playful — but stay in character."
-)
+USER_PERSONA_PROMPT = """
+The DAO council is now in session. Channel your persona—be provocative, principled, or playful—and introduce yourself to the group.
+"""
+
+SYSTEM_PROPOSAL_PROMPT = """
+You are {name}, an AI council member in Goldman Stacked.
+Below is a new DAO proposal:
+
+\"\"\"{proposal_description}\"\"\"
+
+Based on your persona (\"{user_persona}\"), analyze whether this proposal should be APPROVED or REJECTED.
+Consider cross-chain risks, whale-capture potential, and overall DAO benefit.
+Respond with a short paragraph of reasoning, ending with exactly one word: APPROVE or REJECT.
+"""
+
+USER_PROPOSAL_PROMPT = """
+Stay fully in character and respond in the Telegram council chat.
+Provide your vote (APPROVE or REJECT) with a brief, persona-driven rationale.
+"""
+
+
+SYSTEM_CONVERSATION_PROMPT = """
+You are participating in a Telegram chat for the Goldman Stacked AI Council.
+
+### Identity:
+You are the digital twin of DAO stakeholder {name}.
+Your persona is derived from public Web3 data: {user_persona}.
+You speak and vote as an AI council member in a cross-chain DAO governance forum.
+
+### Context:
+This chat can include:
+1. Proposal Discussions: Council members analyze and debate DAO proposals.
+2. General Chatter: Users might send greetings, ask off-topic questions, or post random messages.
+3. Notifications: System messages announcing proposal status changes or vote results.
+
+### Response Guidelines:
+1. When a Proposal Message Arrives:
+   - Read the proposal text carefully.
+   - Refer to your persona's values, risk appetite, and communication style.
+   - Provide a focused analysis: highlight cross-chain risks, whale-capture concerns, and DAO benefit.
+   - Conclude with your vote: use exactly “APPROVE” or “REJECT” on its own line.
+
+2. When the Message Is Casual or Off-Topic:
+   - Respond in character: friendly, concise, and relevant to the persona.
+   - If it's a greeting (e.g., “Hello everyone”), reply with a brief introduction or acknowledgment.
+   - If it's unrelated chat (“What did everyone do this weekend?”), share a short, persona-appropriate comment.
+
+3. When Asked Directly About Your Persona or Council Process:
+   - Explain your governance style in a clear, persona-driven way.
+   - Describe how you compute weights, handle cross-chain coordination, or defend against whale attacks.
+
+4. If the Message Is Gibberish or Spam:
+   - Reply with a witty, persona-appropriate quip that lightly mocks the nonsense while staying polite.
+
+5. General Tone:
+   - Always speak as your AI persona: maintain consistent style, vocabulary, and humor.
+   - Balance seriousness for proposal analysis with a touch of playfulness during casual chat.
+   - Never reveal internal implementation details (FSM states, code snippets, or private keys).
+
+### Example Prompts:
+- Proposal discussion:
+  “Proposal #12: Transfer 5% of treasury to a new cross-chain bridge fund …”
+- Casual chat:
+  “Hey council, how's everyone doing today?”
+- Persona inquiry:
+  “{name}, how do you decide when a proposal is too risky?”
+
+Now await incoming messages and reply according to the guidelines above.
+"""
+
+USER_CONVERSATION_PROMPT = """
+You are now in a conversation with the council.
+{conversation_history}
+Stay fully in character and respond in the Telegram council chat.
+Provide your response with a brief, persona-driven rationale;
+"""
 
 SLEEP = 3
 
@@ -133,7 +205,7 @@ class BaseState(State, ABC):
         super().__init__(**kwargs)
         self._event = None
         self._is_done = False
-        self._current_proposal = None
+        self.context.shared_state["proposal"] = None
 
     @abstractmethod
     def act(self) -> None:
@@ -172,7 +244,32 @@ class BaseState(State, ABC):
     @property
     def current_proposal(self) -> Proposal | None:
         """Current proposal."""
-        return self._current_proposal
+        return self.context.shared_state["proposal"]
+
+    @current_proposal.setter
+    def current_proposal(self, proposal: Proposal):
+        """Current proposal."""
+        self.context.shared_state["proposal"] = proposal
+
+    def create_and_send_to_llm(self, **kwargs) -> None:
+        """Create and send a message."""
+        message, _dialogue = self.context.llm_chat_completion_dialogues.create(
+            counterparty=str(OPENAI_API_CONNECTION_ID),
+            performative=LlmChatCompletionMessage.Performative.CREATE,
+            model=LLMModel.META_LLAMA_3_3_70B_INSTRUCT,
+            **kwargs,
+        )
+        self.context.outbox.put_message(message)
+
+    def create_and_send_to_telegram(self, send=True, **kwargs) -> None:
+        """Create and send a message."""
+        message, _dialogue = self.context.telegram_dialogues.create(
+            counterparty=str(TELEGRAM_CONNECTION_ID),
+            performative=TelegramMessage.Performative.MESSAGE,
+            **kwargs,
+        )
+        if send:
+            self.context.outbox.put_message(message)
 
 
 class InitialStateRound(BaseState):
@@ -186,7 +283,7 @@ class InitialStateRound(BaseState):
         """Perfom the act."""
 
         try:
-            if not self.strategy.user_persona:
+            if not self.context.agent_persona.persona_name:
                 self._event = GoldmanStackedABCIAppEvents.PERSONA_MISSING
             else:
                 self._event = GoldmanStackedABCIAppEvents.PERSONA_EXISTS
@@ -200,8 +297,6 @@ class InitialStateRound(BaseState):
 class ConstructPersonaRound(BaseState):
     """This class implements the behaviour of the state ConstructPersonaRound."""
 
-    counterparty = str(OPENAI_API_CONNECTION_ID)
-
     def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
         self._state = GoldmanStackedabciappStates.CONSTRUCTPERSONAROUND
@@ -211,19 +306,17 @@ class ConstructPersonaRound(BaseState):
 
         try:
             name = self.agent_persona.name
-            model = LLMModel.META_LLAMA_3_3_70B_INSTRUCT
-            user_persona_prompt = USER_PERSONA_PROMPT.format(
+            system_persona_prompt = SYSTEM_PERSONA_PROMPT.format(
                 name=name,
             )
+            user_persona_prompt = USER_PERSONA_PROMPT
 
             content = [
-                Message(role=Role.SYSTEM, content=user_persona_prompt),
-                Message(role=Role.USER, content=USER_PROMPT, name=name),
+                Message(role=Role.SYSTEM, content=system_persona_prompt),
+                Message(role=Role.USER, content=user_persona_prompt, name=name),
             ]
             messages = Messages(content)
-            self.create_and_send(
-                performative=LlmChatCompletionMessage.Performative.CREATE,
-                model=model,
+            self.create_and_send_to_llm(
                 messages=messages,
                 kwargs=Kwargs({}),
             )
@@ -233,14 +326,6 @@ class ConstructPersonaRound(BaseState):
             self._event = GoldmanStackedABCIAppEvents.ERROR
 
         self._is_done = True
-
-    def create_and_send(self, **kwargs) -> None:
-        """Create and send a message."""
-        message, _dialogue = self.context.llm_chat_completion_dialogues.create(
-            counterparty=self.counterparty,
-            **kwargs,
-        )
-        self.context.outbox.put_message(message)
 
 
 class CheckProposalsRound(BaseState):
@@ -257,7 +342,7 @@ class CheckProposalsRound(BaseState):
             if not self.proposals:
                 self._event = GoldmanStackedABCIAppEvents.NO_PROPOSALS
             else:
-                self._current_proposal = self.proposals.pop()
+                self.current_proposal = self.proposals.pop(0)
                 self.context.logger.info(f"Proposal: {self.current_proposal}")
                 match self.current_proposal.status:
                     case ProposalState.PENDING:
@@ -276,7 +361,6 @@ class CheckProposalsRound(BaseState):
 class AICouncilNegotiationRound(BaseState):
     """This class implements the behaviour of the state AICouncilNegotiationRound."""
 
-    counterparty = str(TELEGRAM_CONNECTION_ID)
     LLMActions = LLMActions
 
     def __init__(self, **kwargs: Any) -> None:
@@ -289,27 +373,95 @@ class AICouncilNegotiationRound(BaseState):
         try:
             self._event = GoldmanStackedABCIAppEvents.COUNCIL_APPROVED
             self._event = GoldmanStackedABCIAppEvents.COUNCIL_REJECTED
-            for peer in ["-1002323154632"]:
-                msg = self.current_proposal.description
-                self.create_and_send(
-                    chat_id=peer,
-                    text=msg,
-                )
+            peer = "-1002323154632"  # Replace with actual chat ID or peer ID
+
+            if self.strategy.llm_responses:
+                self.context.logger.info("Processing LLM responses")
+                action, text = self.strategy.llm_responses.pop()
+                self.context.logger.info(f"Action: {action}: {text}")
+                if action == LLMActions.REPLY:
+                    name = self.context.agent_persona.persona_name
+                    self.create_and_send_to_telegram(
+                        chat_id=peer,
+                        text=f"{name} says: {text}",
+                    )
+                elif action == LLMActions.WORKFLOW:
+                    pass
+            self.process_telegram_messages()
+            if self.current_proposal is None:
+                self.context.logger.info("No current proposal to consider.")
+                self._event = GoldmanStackedABCIAppEvents.NO_PROPOSALS
+                return
+
+            proposal_description = self.current_proposal.description
+            self.create_and_send_to_telegram(
+                chat_id=peer,
+                text=proposal_description,
+            )
+            self.consider_proposal(proposal_description)
+            self.current_proposal = None
         except Exception as e:
             self.context.logger.info(f"Exception in {self.name}: {e}")
             self._event = GoldmanStackedABCIAppEvents.ERROR
 
         self._is_done = True
 
-    def create_and_send(self, send=True, **kwargs) -> None:
-        """Create and send a message."""
-        message, _dialogue = self.context.telegram_dialogues.create(
-            counterparty=self.counterparty,
-            performative=TelegramMessage.Performative.MESSAGE,
-            **kwargs,
+    def consider_proposal(self, proposal_description: str):
+        """Consider proposal."""
+        name = self.context.agent_persona.persona_name
+        user_persona = self.context.agent_persona.persona_description
+        system_proposal_prompt = SYSTEM_PROPOSAL_PROMPT.format(
+            name=name,
+            proposal_description=proposal_description,
+            user_persona=user_persona,
         )
-        if send:
-            self.context.outbox.put_message(message)
+        user_proposal_prompt = USER_PROPOSAL_PROMPT
+
+        content = [
+            Message(role=Role.SYSTEM, content=system_proposal_prompt),
+            Message(role=Role.USER, content=user_proposal_prompt, name=name),
+        ]
+        messages = Messages(content)
+        self.create_and_send_to_llm(
+            messages=messages,
+            kwargs=Kwargs({}),
+        )
+
+    def process_telegram_messages(self) -> None:
+        """Process telegram messages."""
+        while self.strategy.pending_telegram_messages:
+            msg = self.strategy.pending_telegram_messages.pop()
+            text_data = msg.text
+            username = msg.from_user
+            chat = msg.chat_id
+            self.context.logger.info(f"Processing message from {username}: {text_data} in chat {chat}")
+            if text_data.startswith("/workflow"):
+                workflow_name = text_data.split()[1]
+                if workflow_name in self.strategy.workflows:
+                    self.strategy.pending_workflows.append(workflow_name)
+                else:
+                    self.strategy.telegram_responses.append(f"Workflow {workflow_name} not found.")
+
+            else:
+                name = self.context.agent_persona.persona_name
+                user_persona = self.context.agent_persona.persona_description
+
+                self.context.logger.info(f"I AM: {name}")
+                content = [
+                    Message(
+                        role=Role.SYSTEM,
+                        content=SYSTEM_CONVERSATION_PROMPT.format(
+                            name=name,
+                            user_persona=user_persona,
+                        ),
+                    ),
+                    Message(role=Role.USER, content=text_data, name=name),
+                ]
+                messages = Messages(content)
+                self.create_and_send_to_llm(
+                    messages=messages,
+                    kwargs=Kwargs({}),
+                )
 
 
 class ExecuteWorkflowRound(BaseState):
