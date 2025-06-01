@@ -43,7 +43,7 @@ contract CallProposeBase is Script {
     uint128 public constant MSG_VALUE = 0;
 
     function run() external {
-        address governor = address(0xE5Da5F4d8644A271226161a859c1177C5214c54e);
+        address governor = address(0xd46A4c7EA40d27cedE99fA195efE0BD2422498e0);
         address governanceExecutor = address(0xBF5609fD47508143b7E9A1dcf0B814fFDB451FF0);
         address signer = address(0x52370eE170c0E2767B32687166791973a0dE7966);
 
@@ -69,3 +69,4 @@ contract CallProposeBase is Script {
 }
 
 // https://layerzeroscan.com/tx/0x5c17d88a6a7917f6bd4f7503c0458ab8b24afffd75b9d88e49f68197652e2159
+// https://layerzeroscan.com/tx/0x319f7d11b6e437e002adc1028d12f398d9b460c93df81616d5b39f5bf4993ff5

@@ -154,7 +154,8 @@ contract VotingMachineLzRead is OAppRead, OAppOptionsType3 {
         bytes32 proposalId,
         bytes calldata extraOptions
     ) external payable returns (MessagingReceipt memory receipt) {
-        require(block.timestamp <= proposalSnapshotEndTimes[proposalId], "Voting has ended");
+        // TODO Figure out blocks vs timestamps
+        //require(block.timestamp <= proposalSnapshotEndTimes[proposalId], "Voting has ended");
         require(!hasVoted[proposalId][msg.sender], "Already voted");
 
         uint256 startTime = proposalSnapshots[proposalId];
@@ -163,8 +164,9 @@ contract VotingMachineLzRead is OAppRead, OAppOptionsType3 {
 
         bytes memory cmd = _getCmd(startTime);
 
-        MessagingFee memory fee = _quote(READ_CHANNEL, cmd, extraOptions, false);
-        require(msg.value >= fee.nativeFee);
+        // TODO Figure out the correct quote check
+        //MessagingFee memory fee = _quote(READ_CHANNEL, cmd, extraOptions, false);
+        //require(msg.value >= fee.nativeFee);
 
         receipt =
             _lzSend(

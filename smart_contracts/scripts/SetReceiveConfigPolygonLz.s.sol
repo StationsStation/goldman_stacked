@@ -14,7 +14,7 @@ contract SetReceiveConfigPolygonLz is Script {
 
     function run() external {
         address endpoint = address(0x1a44076050125825900e736c501f859c50fE728c);
-        address oapp      = address(0x161977565b31B53Eaa6c977083eC5B19Cf176292);
+        address oapp      = address(0x9A251773031BB6ce17E34bF27F2C802885620038);
         uint32 eid        = 4294967295;
         address receiveLib= address(0xc214d690031d3F873365f94d381D6D50c35AA7FA);
         address signer    = address(0x52370eE170c0E2767B32687166791973a0dE7966);
