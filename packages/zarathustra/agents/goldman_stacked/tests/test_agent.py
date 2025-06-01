@@ -10,7 +10,7 @@ AGENT_NAME = "goldman_stacked"
 AUTHOR = "zarathustra"
 VERSION = "0.1.0"
 DEFAULT_LAUNCH_TIMEOUT = 10
-LAUNCH_SUCCEED_MESSAGE = "Start processing"
+LAUNCH_SUCCEED_MESSAGE = "HTTP Server has connected"
 
 
 class TestAgentLaunch(AEATestCaseMany):
