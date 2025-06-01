@@ -8,11 +8,11 @@ license: Apache-2.0
 aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
   README.md: bafybeie7knzgwomn2c5gophogokjd27c2kmoq6ys2srbfaztgbkhhi7kfe
-  __init__.py: bafybeihcji4rf2yza4lfwpp4ta7tds24gjotbfpgfph3fa6qw6u5zy4cte
-  behaviours.py: bafybeibggsxkjz4kbnslrlsmvm5q4zd5dfgknrmfajvjtqiymefdachfo4
+  __init__.py: bafybeibdd5zbrlbevwbwflhmoxwq4w53ghlxunrcih5btkqx4zspvlgx5y
+  behaviours.py: bafybeig5v7kxicvhqen7lddxntd6bc4e57bwg6lqwurkndqwlhy24u7bty
   dialogues.py: bafybeigqjqzahwrwu3o4c5cd7lmylx7epdrkux34uvwvuimukk6y6rn2tu
-  handlers.py: bafybeidmefksp7itvpms3yfzpd2f3uoku272ntrqtvvfmrsqzw3xmfarqa
-  strategy.py: bafybeicpqulfj7mukhmgjhv5counon35fcvelflsdt4kmuyphwio3jiqfm
+  handlers.py: bafybeibmnydkb7tumkwjutvyufwydc6xog5a4ci322mis2tevcy55m3mxq
+  strategy.py: bafybeidmp6rycobjt4vyc2xxipvl7vqjkskxgodlpdxtx3ooan52msi7sy
   tests/__init__.py: bafybeigb2ji4vkcap3hokcedggjwsrah7te2nxjhkorwf3ibwgyaa2glma
 fingerprint_ignore_patterns: []
 connections:

@@ -6,7 +6,7 @@ description: ''
 aea_version: '>=1.55.0, <2.0.0'
 fingerprint:
   tests/__init__.py: bafybeibk76alseqt3ufreyev7rnz5zuk6dcftt7c2ob54gmhpt6xrhkg2y
-  tests/test_agent.py: bafybeifayodyowzegqktdn5katbdg2o3frta5vsasqau5rj62buekevpui
+  tests/test_agent.py: bafybeihnsft6ftukqxz6pgegfi55x2uxbiuxp6motcr4phtpedfxcn3sou
 fingerprint_ignore_patterns: []
 connections:
 - eightballer/http_client:0.1.0:bafybeiaz5auftwxpt4czrmeeesggqlkc2kosmetq6adrebeu6g7bkhqc2u
@@ -20,7 +20,7 @@ protocols:
 - open_aea/signing:1.0.0:bafybeig2d36zxy65vd7fwhs7scotuktydcarm74aprmrb5nioiymr3yixm
 - eightballer/chatroom:0.1.0:bafybeib36ua2o3lea5vkp6erhf23wb4egm6us5xj2z2xd7sq2tjarlzt4i
 skills:
-- zarathustra/goldman_stacked_abci_app:0.1.0:bafybeietxu3cmzln72tr4ddvs72rihjzw4nvtjg76ljzf6r7wuplneem4q
+- zarathustra/goldman_stacked_abci_app:0.1.0:bafybeicoddpfrfp54kfwgbzqkhdbrmbx3lhr6nxdjicx57322dm2kj76om
 customs: []
 default_ledger: ethereum
 required_ledgers:
