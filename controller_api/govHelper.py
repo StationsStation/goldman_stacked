@@ -4,6 +4,7 @@ import requests
 from web3 import Web3
 from dotenv import load_dotenv
 import json
+import os
 
 load_dotenv()
 
@@ -13,7 +14,10 @@ with open("abi.json", encoding="utf-8") as file:
 
 ADDRESS = "0xE5Da5F4d8644A271226161a859c1177C5214c54e"
 
-PONDER_URL = "http://localhost:42069/graphql"
+
+BASE_URL = os.environ.get("PONDER_API_URL", "http://localhost:42069")
+
+PONDER_URL = f"{BASE_URL}/graphql"
 HEADERS = {"Content-Type": "application/json"}
 
 w3 = Web3(Web3.HTTPProvider(RPC))
