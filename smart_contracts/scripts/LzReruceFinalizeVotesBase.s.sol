@@ -5,19 +5,12 @@ import "forge-std/Script.sol";
 import { OptionsBuilder } from "@layerzerolabs/oapp-evm/contracts/oapp/libs/OptionsBuilder.sol";
 import { MessagingReceipt } from "@layerzerolabs/lz-evm-protocol-v2/contracts/interfaces/ILayerZeroEndpointV2.sol";
 
-interface IVotingMachineLzRead {
-    /// @dev Sends a read request to LayerZero, querying votes of msg.sender on a Governor chain Id.
-    /// @param proposalId Proposal Id.
-    /// @return receipt The LayerZero messaging receipt for the request.
-    function getVotesLzRead(
-        bytes32 proposalId,
-        bytes calldata extraOptions
-    ) external payable returns (MessagingReceipt memory receipt);
+interface IMyGovernor {
+    function finalizeProposalVotes(uint256 proposalId, bytes calldata options) external payable;
 }
 
-/// @title LzReadVotePolygon
-/// @notice Defines and applies ULN (DVN) config for inbound message verification via LayerZero Endpoint V2.
-contract LzReadVotePolygon is Script {
+/// @title LzReruceFinalizeVotesBase
+contract LzReruceFinalizeVotesBase is Script {
     using OptionsBuilder for bytes;
 
     // Gas limit for the executor
@@ -28,15 +21,15 @@ contract LzReadVotePolygon is Script {
     uint128 public constant MSG_VALUE = 0;
 
     function run() external {
-        address votingMachineLzRead = address(0x7939FcDB1a8793dfA64f63f9CB8221BFbbAACD07);
+        address governor = address(0xE5Da5F4d8644A271226161a859c1177C5214c54e);
         address signer = address(0x52370eE170c0E2767B32687166791973a0dE7966);
-        bytes32 proposalId = 0x3FD9628E03D871B9813D57D8A086984126B9775530E3EA0345FCE32CDC3F0CB3;
+        uint256 proposalId = 28879795473662080947213802400002854805423356819059346837403212000082448551091;
 
         bytes memory options = OptionsBuilder.newOptions().addExecutorLzReadOption(GAS_LIMIT, CALLDATA_SIZE, MSG_VALUE);
         //MessagingFee memory fee = _quote(31084, cmd, options, false);
 
         vm.startBroadcast(signer);
-        IVotingMachineLzRead(votingMachineLzRead).getVotesLzRead{value: 100000000000000}(proposalId, options);
+        IMyGovernor(governor).finalizeProposalVotes{value: 100000000000000}(proposalId, options);
         vm.stopBroadcast();
     }
 }

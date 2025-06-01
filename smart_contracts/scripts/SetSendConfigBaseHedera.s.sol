@@ -16,7 +16,7 @@ contract SetSendConfigBaseHedera is Script {
     /// @notice Broadcasts transactions to set both Send ULN and Executor configurations
     function run() external {
         address endpoint = address(0x1a44076050125825900e736c501f859c50fE728c);
-        address oapp      = address(0xE1F263369823C2cAAEb6fbb907A9C1142fb72FE5);
+        address oapp      = address(0x7a9470bE221B757f7cB99a60fca3e3Bc12189F24);
         uint32 eid        = 30316;
         address sendLib   = address(0xB5320B0B3a13cC860893E2Bd79FCd7e13484Dda2);
         address signer    = address(0x52370eE170c0E2767B32687166791973a0dE7966);

@@ -14,7 +14,7 @@ contract SetReceiveConfigArbitrumLz is Script {
 
     function run() external {
         address endpoint = address(0x1a44076050125825900e736c501f859c50fE728c);
-        address oapp      = address(0xf805DfF246CC208CD2F08ffaD242b7C32bc93623);
+        address oapp      = address(0x6f7661F52fE1919996d0A4F68D09B344093a349d);
         uint32 eid        = 4294967295;
         address receiveLib= address(0xbcd4CADCac3F767C57c4F402932C4705DF62BEFf);
         address signer    = address(0x52370eE170c0E2767B32687166791973a0dE7966);

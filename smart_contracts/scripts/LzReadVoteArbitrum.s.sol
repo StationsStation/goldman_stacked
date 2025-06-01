@@ -28,7 +28,7 @@ contract LzReadVoteArbitrum is Script {
     uint128 public constant MSG_VALUE = 0;
 
     function run() external {
-        address votingMachineLzRead = address(0xf805DfF246CC208CD2F08ffaD242b7C32bc93623);
+        address votingMachineLzRead = address(0x6f7661F52fE1919996d0A4F68D09B344093a349d);
         address signer = address(0x52370eE170c0E2767B32687166791973a0dE7966);
         bytes32 proposalId = 0x3FD9628E03D871B9813D57D8A086984126B9775530E3EA0345FCE32CDC3F0CB3;
 
