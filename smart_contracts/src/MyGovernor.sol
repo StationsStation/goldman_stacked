@@ -31,12 +31,14 @@ contract MyGovernor is Governor, GovernorCountingSimple, GovernorVotes, Governor
         governorRelay = _governorRelay;
     }
 
+    /// @notice Apparently this is in blocks.
     function votingDelay() public pure override returns (uint256) {
-        return 1 minutes;
+        return 30;
     }
 
+    /// @notice Apparently this is in blocks.
     function votingPeriod() public pure override returns (uint256) {
-        return 1 hours;
+        return 1_000;
     }
 
     /// @dev Create a new proposal to change the protocol / contract parameters and send its snapshot details cross-chain.

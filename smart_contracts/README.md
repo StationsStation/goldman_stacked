@@ -2,7 +2,7 @@
 
 This is a secure and trust-minimized cross-chain governance using [LayerZero v2 `lzRead`](https://docs.layerzero.network/v2/developers/evm/lzread/overview).
 
-It builds on snapshot-based voting, follows Merkle Patricia storage proofs, and adapts it to use LayerZero’s trust-minimized read capabilities.
+It builds on snapshot-based voting, and adapts it to use LayerZero’s trust-minimized read capabilities.
 
 ## Cross-Chain Workflow
 - Propose on L1 by the council of AI agents

@@ -91,6 +91,12 @@ contract GovernorRelayLZ is OAppRead, OAppOptionsType3 {
         emit VotingMachinesUpdated(newVotingMachines);
     }
 
+    /// @notice Thanks for making it virtual :).
+    function _payNative(uint256 _nativeFee) internal override returns (uint256 nativeFee) {
+        require(msg.value >= _nativeFee, "NotEnoughNative");
+        return _nativeFee;
+    }
+
     function sendProposalDetails(bytes32 proposalId, uint256 startTime, uint256 endTime, bytes calldata options) external payable {
         require(msg.sender == governor, "Only governor");
 
@@ -181,8 +187,9 @@ contract GovernorRelayLZ is OAppRead, OAppOptionsType3 {
 
         bytes memory payload = _getCmd(proposalId);
 
-        MessagingFee memory fee = _quote(READ_CHANNEL, payload, extraOptions, false);
-        require(msg.value >= fee.nativeFee);
+        // TODO Figure out the correct quote check
+        //MessagingFee memory fee = _quote(READ_CHANNEL, payload, extraOptions, false);
+        //require(msg.value >= fee.nativeFee);
 
         MessagingReceipt memory receipt =
             _lzSend(
