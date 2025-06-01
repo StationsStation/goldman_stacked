@@ -47,7 +47,7 @@
 
 <div class="w-full space-y-6">
   <div class="card p-4 grid grid-cols-[auto_1fr_auto] gap-4 items-center bg-grey">
-    <h2 class="w-full p-4 text-center text-2xl font-mono text-green-400 tracking-wide uppercase mb-4">The Advisory Board</h2>
+    <h2 class="w-full p-4 text-center text-2xl font-mono text-green-400 tracking-wide uppercase mb-4">Proposals</h2>
 
     <div class="col-span-3 overflow-x-auto">
       <table class="w-full text-left table-auto">
