@@ -2,21 +2,17 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Agent } from './Agent';
 export type Proposal = {
-    id: string;
-    title: string;
+    proposalId: string;
     description?: string;
     /**
      * Current state of the proposal in its lifecycle
      */
     status: Proposal.status;
-    createdBy: Agent;
-    createdAt: string;
+    createdBy: string;
     votes?: Array<{
-        voter: Agent;
-        vote: 'yes' | 'no' | 'abstain';
-        reason?: string;
+        voterAddress?: string;
+        weight?: string;
     }>;
 };
 export namespace Proposal {
@@ -32,6 +28,8 @@ export namespace Proposal {
         QUEUED = 'Queued',
         EXPIRED = 'Expired',
         EXECUTED = 'Executed',
+        ENDED = 'Ended',
+        UNKNOWN = 'unknown',
     }
 }
 
