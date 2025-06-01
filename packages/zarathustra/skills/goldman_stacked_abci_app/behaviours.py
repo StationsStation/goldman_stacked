@@ -198,7 +198,7 @@ class BaseState(State, ABC):
     def create_and_send_to_llm(self, **kwargs) -> None:
         """Create and send a message."""
         message, _dialogue = self.context.llm_chat_completion_dialogues.create(
-            counterparty=self.counterparty,
+            counterparty=str(OPENAI_API_CONNECTION_ID),
             performative=LlmChatCompletionMessage.Performative.CREATE,
             model=LLMModel.META_LLAMA_3_3_70B_INSTRUCT,
             **kwargs,
@@ -208,7 +208,7 @@ class BaseState(State, ABC):
     def create_and_send_to_telegram(self, send=True, **kwargs) -> None:
         """Create and send a message."""
         message, _dialogue = self.context.telegram_dialogues.create(
-            counterparty=self.counterparty,
+            counterparty=str(TELEGRAM_CONNECTION_ID),
             performative=TelegramMessage.Performative.MESSAGE,
             **kwargs,
         )
@@ -240,8 +240,6 @@ class InitialStateRound(BaseState):
 
 class ConstructPersonaRound(BaseState):
     """This class implements the behaviour of the state ConstructPersonaRound."""
-
-    counterparty = str(OPENAI_API_CONNECTION_ID)
 
     def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
@@ -307,7 +305,6 @@ class CheckProposalsRound(BaseState):
 class AICouncilNegotiationRound(BaseState):
     """This class implements the behaviour of the state AICouncilNegotiationRound."""
 
-    counterparty = str(TELEGRAM_CONNECTION_ID)
     LLMActions = LLMActions
 
     def __init__(self, **kwargs: Any) -> None:
@@ -343,6 +340,7 @@ class AICouncilNegotiationRound(BaseState):
         self._is_done = True
 
     def consider_proposal(self, proposal_description: str):
+        """Consider proposal."""
         name = self.agent_persona.name
         user_persona = self.strategy.user_persona
         system_proposal_prompt = SYSTEM_PROPOSAL_PROMPT.format(

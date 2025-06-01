@@ -9,8 +9,8 @@ aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
   README.md: bafybeie7knzgwomn2c5gophogokjd27c2kmoq6ys2srbfaztgbkhhi7kfe
   __init__.py: bafybeibdd5zbrlbevwbwflhmoxwq4w53ghlxunrcih5btkqx4zspvlgx5y
-  behaviours.py: bafybeig5v7kxicvhqen7lddxntd6bc4e57bwg6lqwurkndqwlhy24u7bty
-  dialogues.py: bafybeigqjqzahwrwu3o4c5cd7lmylx7epdrkux34uvwvuimukk6y6rn2tu
+  behaviours.py: bafybeif5rwgm6dqwvpzg5bbdoihxhzdvuzvndsg3ht4afqmkaywtqnypfq
+  dialogues.py: bafybeihumikopwajayxsmbyz4dqhzzchief6qkgcjfjtdtni62wazii6ea
   handlers.py: bafybeibmnydkb7tumkwjutvyufwydc6xog5a4ci322mis2tevcy55m3mxq
   strategy.py: bafybeidmp6rycobjt4vyc2xxipvl7vqjkskxgodlpdxtx3ooan52msi7sy
   tests/__init__.py: bafybeigb2ji4vkcap3hokcedggjwsrah7te2nxjhkorwf3ibwgyaa2glma
@@ -19,7 +19,7 @@ fingerprint:
 fingerprint_ignore_patterns: []
 connections:
 - zarathustra/openai_api:0.1.0:bafybeicgrjgthj6vva3spg4apy43ptubw47ycfk3phhpfncblf2qnz7qju
-- eightballer/telegram_wrapper:0.1.0:bafybeicnzu2fsjejj4loqcc2bbixgovrbdxpt3qnad6kjrptu7rghgh74e
+- eightballer/telegram_wrapper:0.1.0:bafybeigl6wknndxuwc647c4tjllqwi363fqbijfca7pdl2cq2u4lxinsna
 contracts: []
 protocols:
 - eightballer/default:0.1.0:bafybeicsdb3bue2xoopc6lue7njtyt22nehrnkevmkuk2i6ac65w722vwy
