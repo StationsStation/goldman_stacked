@@ -367,7 +367,6 @@ class AICouncilNegotiationRound(BaseState):
         super().__init__(**kwargs)
         self._state = GoldmanStackedabciappStates.AICOUNCILNEGOTIATIONROUND
 
-
     def act(self) -> None:
         """Perfom the act."""
 
@@ -392,7 +391,7 @@ class AICouncilNegotiationRound(BaseState):
             if self.current_proposal is None:
                 self.context.logger.info("No current proposal to consider.")
                 self._event = GoldmanStackedABCIAppEvents.NO_PROPOSALS
-                return 
+                return
 
             proposal_description = self.current_proposal.description
             self.create_and_send_to_telegram(

@@ -1,8 +1,8 @@
 {
     "dev": {
-        "skill/zarathustra/goldman_stacked_abci_app/0.1.0": "bafybeid7qqry3vgaeqjdq63szhowzwbjd4hjyfnfvf3bzqf6dzin2carkm",
-        "agent/zarathustra/goldman_stacked/0.1.0": "bafybeifxhqjjpeioxgm4uhb7wih45srnmuoyyot3kqw75admkhrmvivr7u",
-        "service/zarathustra/goldman_stacked/0.1.0": "bafybeicpfn3264c3nlb3uzujc7fjsyiadl5shxtnflsxnrmx4sr3gbggde"
+        "skill/zarathustra/goldman_stacked_abci_app/0.1.0": "bafybeiew6jgyypqhqbdq72p6xxsnrljdbzlv5buel4xwt7ail4ryofsygi",
+        "agent/zarathustra/goldman_stacked/0.1.0": "bafybeihpzw3ck3ipjduhjwpuyjnozqtph4vicd2ybgy4knbyvk6ptrqj5y",
+        "service/zarathustra/goldman_stacked/0.1.0": "bafybeief3vqquofweru2hhxhrez2m5cos6jsoaayuadz4tl3fxqrvzegje"
     },
     "third_party": {
         "protocol/eightballer/chatroom/0.1.0": "bafybeib36ua2o3lea5vkp6erhf23wb4egm6us5xj2z2xd7sq2tjarlzt4i",

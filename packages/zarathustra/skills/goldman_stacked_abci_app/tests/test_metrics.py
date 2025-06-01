@@ -1,10 +1,7 @@
 """Test the metrics skill."""
 
-import json
-import logging
 from typing import cast
 from pathlib import Path
-from unittest.mock import patch
 
 from aea.test_tools.test_skill import BaseSkillTestCase
 from aea.protocols.dialogue.base import DialogueMessage
