@@ -1,0 +1,11 @@
+{
+  "providerName": "polygon",
+  "chainId": "137",
+  "networkURL": "https://polygon-mainnet.g.alchemy.com/v2/",
+  "gasPriceInGwei": "50",
+  "endpointV2Address": "0x1a44076050125825900e736c501f859c50fE728c",
+  "governorChainId": "30184",
+  "votingTokenAddress": "0x12a3A4A4b19B8Ba99ad11f5b36ED58E010A4a19E",
+  "votingMachineLzReadAddress": "0x7939FcDB1a8793dfA64f63f9CB8221BFbbAACD07",
+  "governorRelayLZAddress": "0x0000000000000000000000007a9470bE221B757f7cB99a60fca3e3Bc12189F24"
+}
