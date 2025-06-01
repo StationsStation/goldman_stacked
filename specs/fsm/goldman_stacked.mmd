@@ -1,0 +1,31 @@
+graph TD
+  %%============ Initial Bootstrap ============%%
+  InitialStateRound -->|PERSONA_MISSING| ConstructPersonaRound
+  InitialStateRound -->|PERSONA_EXISTS| CheckProposalsRound
+  InitialStateRound -->|ERROR| WaitBeforeRetryRound
+
+  ConstructPersonaRound -->|DONE| CheckProposalsRound
+  ConstructPersonaRound -->|ERROR| WaitBeforeRetryRound
+
+  %%============== Proposal Checking =============%%
+  CheckProposalsRound -->|PENDING_PREAPPROVAL| AICouncilNegotiationRound
+  CheckProposalsRound -->|APPROVED_BY_DAO| ExecuteWorkflowRound
+  CheckProposalsRound -->|REJECTED_BY_DAO| ExecuteWorkflowRound
+  CheckProposalsRound -->|NO_PROPOSALS| WaitBeforeRetryRound
+  CheckProposalsRound -->|ERROR| WaitBeforeRetryRound
+
+  %%========== Council Discussion & Vote =========%%
+  AICouncilNegotiationRound -->|COUNCIL_APPROVED| ExecuteWorkflowRound
+  AICouncilNegotiationRound -->|COUNCIL_REJECTED| ExecuteWorkflowRound
+  AICouncilNegotiationRound -->|ERROR| WaitBeforeRetryRound
+
+  %%============ Execute Workflow ==============%%
+  ExecuteWorkflowRound -->|DONE| NotifyUsersRound
+  ExecuteWorkflowRound -->|ERROR| WaitBeforeRetryRound
+
+  %%============ Notify DAO Members =============%%
+  NotifyUsersRound -->|DONE| CheckProposalsRound
+  NotifyUsersRound -->|ERROR| WaitBeforeRetryRound
+
+  %%================= Error Loop =================##
+  WaitBeforeRetryRound -->|DONE| InitialStateRound

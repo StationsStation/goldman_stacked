@@ -35,7 +35,27 @@ ponder/.env*.local
 ponder/generated/
 ponder/.ponder/
 
-# frontned
+# From Ponder
+# Dependencies
+ponder/node_modules
+
+# Debug
+ponder/npm-debug.log*
+ponder/yarn-debug.log*
+ponder/yarn-error.log*
+ponder/.pnpm-debug.log*
+
+# Misc
+ponder/.DS_Store
+
+# Env files
+ponder/.env*.local
+
+# Ponder
+ponder/generated/
+ponder/.ponder/
+
+# frontend
 frontend/.DS_Store
 frontend/node_modules
 frontend//build
@@ -47,6 +67,9 @@ frontend/!.env.example
 frontend/vite.config.js.timestamp-*
 frontend/vite.config.ts.timestamp-*
 
-
-
 ./data
+
+packages/open_aea/
+packages/eightballer/
+packages/zarathustra/protocols/
+packages/zarathustra/connections/

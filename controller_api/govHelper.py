@@ -1,10 +1,11 @@
 """Module to get data from governance contract and subgraph."""
 
+import os
+
 import requests
 from web3 import Web3
 from dotenv import load_dotenv
-import json
-import os
+
 
 load_dotenv()
 
@@ -46,9 +47,9 @@ def get_proposals() -> list[dict]:
         try:
             status = governor_contract.functions.state(int(proposal["proposalId"])).call()
             proposal["status"] = status
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             error_message = str(e.args[0])  # Get the error message
-            if 'Proposal voting has ended, but was not finalized yet' in error_message:
+            if "Proposal voting has ended, but was not finalized yet" in error_message:
                 proposal["status"] = "Ended"
             else:
                 proposal["status"] = "unknown"

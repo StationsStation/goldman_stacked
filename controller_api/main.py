@@ -4,9 +4,8 @@ import logging
 
 import yaml
 import connexion
-from flask_cors import CORS
-
 import govHelper
+from flask_cors import CORS
 
 
 log = logging.getLogger(__name__)
@@ -16,7 +15,6 @@ def get_agents() -> list[dict]:
     """Get all agents."""
     with open("agents.yaml", encoding="utf-8") as yaml_file:
         return yaml.safe_load(yaml_file)["agents"]
-
 
 
 def get_agent(id: str) -> dict:
@@ -65,7 +63,8 @@ def get_proposal_vote(id: str, vote: dict) -> dict:
     log.info(f"Vote retrieved for proposal {id}: {vote}")
     return vote
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     app = connexion.FlaskApp(__name__, specification_dir="../specs/")
     flask_app = app.app  # access underlying Flask app
     CORS(flask_app, resources={r"/*": {"origins": "*"}})
