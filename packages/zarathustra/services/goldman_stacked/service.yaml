@@ -9,7 +9,7 @@ fingerprint:
   tests/__init__.py: bafybeiausykbndof27hjfgwqg6nnmk7zw7lyytwzekih3gszwdypbtxjka
   tests/test_service.py: bafybeicplirjoql5q3l5zjl5xrgamnoxuj3year7u2vrtfnzzllzeyutuy
 fingerprint_ignore_patterns: []
-agent: zarathustra/goldman_stacked:0.1.0:bafybeia36cdgwkilunxm6yvlacslt47gvyn4i6xt4vvxoo7pe74s4magiy
+agent: zarathustra/goldman_stacked:0.1.0:bafybeifysdra67mteg2z2utfwthckeom3s46jzggewgj2ncv3eel73clkm
 number_of_agents: 1
 deployment:
   agent:
