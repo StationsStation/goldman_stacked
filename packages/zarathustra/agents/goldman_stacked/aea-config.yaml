@@ -2,7 +2,7 @@ agent_name: goldman_stacked
 author: zarathustra
 version: 0.1.0
 license: Apache-2.0
-description: Agent to compete in EthPrague 2024 hackathon, represents a member of
+description: Agent to compete in EthPrague 2025 hackathon, represents a member of
   the AI investment council who protect DAO`s from governance attacks.
 aea_version: '>=1.55.0, <2.0.0'
 fingerprint:
