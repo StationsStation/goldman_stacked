@@ -71,7 +71,7 @@ frontend/vite.config.ts.timestamp-*
 
 packages/open_aea/
 
-goldman_stacked
+/goldman_stacked
 
 packages/eightballer/protocols/default
 packages/eightballer/protocols/http
