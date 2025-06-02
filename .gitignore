@@ -70,9 +70,11 @@ frontend/vite.config.ts.timestamp-*
 ./data
 
 packages/open_aea/
-packages/eightballer/
-packages/zarathustra/protocols/
-packages/zarathustra/connections/
-
 
 goldman_stacked
+
+packages/eightballer/protocols/default
+packages/eightballer/protocols/http
+packages/open_aea/protocols/signing
+packages/eightballer/connections/http_client
+packages/eightballer/connections/http_server

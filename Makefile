@@ -80,3 +80,15 @@ install:
 	poetry run autonomy packages sync
 
 all: fmt lint test hashes
+
+
+metadata:
+	# Folling have been generated and deployed as part of hackathons.
+
+	adev metadata generate . protocol/zarathustra/llm_chat_completion/1.0.0 01 && adev -v metadata validate mints/01.json
+	adev metadata generate . protocol/eightballer/chatroom/0.1.0 02 && adev -v metadata validate mints/02.json
+	adev metadata generate . connection/zarathustra/openai_api/0.1.0 03 && adev -v metadata validate mints/03.json
+	adev metadata generate . connection/eightballer/chatroom/0.1.0 04 && adev -v metadata validate mints/04.json
+	adev metadata generate . skill/zarathustra/goldman_stacked_abci_app/0.1.0 05 && adev -v metadata validate mints/05.json
+	adev metadata generate . agent/zarathustra/goldman_stacked/0.1.0 06 && adev -v metadata validate mints/06.json
+	adev metadata generate . service/zarathustra/goldman_stacked/0.1.0 07 && adev -v metadata validate mints/07.json
