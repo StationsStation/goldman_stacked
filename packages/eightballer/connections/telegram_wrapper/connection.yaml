@@ -2,7 +2,7 @@ name: telegram_wrapper
 author: eightballer
 version: 0.1.0
 type: connection
-description: A connection for sending and receiving messages using the python-tele-rgram
+description: A connection for sending and receiving messages using the python-telegram-bot
   library.
 license: Apache-2.0
 aea_version: '>=1.0.0, <2.0.0'
