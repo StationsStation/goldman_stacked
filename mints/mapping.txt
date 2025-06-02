@@ -130,9 +130,11 @@ token_id-"component_id"
 
 
 # Eth Prague components
-?-protocol/eightballer/chatroom/0.1.0
-?-connection/zarathustra/openai_api/0.1.0
-?-connection/eightballer/telegram_wrapper/0.1.0
-?-skill/zarathustra/goldman_stacked_abci_app/0.1.0
-
+289-protocol/zarathustra/llm_chat_completion/1.0.0
+290-protocol/eightballer/chatroom/0.1.0
+291-connection/zarathustra/openai_api/0.1.0
+292-connection/eightballer/telegram_wrapper/0.1.0
+293-skill/zarathustra/goldman_stacked_abci_app/0.1.0
+65-agent/zarathustra/goldman_stacked/0.1.0
+48-service/zarathustra/goldman_stacked/0.1.0
 

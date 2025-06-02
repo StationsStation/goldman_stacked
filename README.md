@@ -172,6 +172,36 @@ cd goldman_stacked
 make install
 ```
 
+Activate the virtual environment
+
+```shell
+poetry shell
+```
+
+Copy the `.env.template`
+
+```shell
+cp .env.template .env
+```
+
+And make sure the correct environmental variables are set:
+- `AKASH_API_KEY`: obtainable via [Akash](https://akash.network/)
+- `CONNECTION_TELEGRAM_WRAPPER_CONFIG_TOKEN`: Telegram bot token (via [@Botfather](https://core.telegram.org/bots/features#botfather))
+
+Then, you should be all ready to fire up 🦾🤖.
+
+```shell
+adev run dev zarathustra/goldman_stacked:0.1.0
+```
+
+The `--force` flag provides a convenient way to restart from scratch in any subsequent runs. When running a single agent, Tendermint can be also disabled:
+
+```shell
+adev run dev zarathustra/goldman_stacked:0.1.0 --force --no-use-tendermint
+```
+
+In case you did not use the `--no-use-tendermint`, be aware that a docker container running Tendermint has been spun up, which you want to stop once you're done playing around in the Agent Asylum for the day.
+
 ## Commands
 
 Here are common commands you might need while working with the project:
